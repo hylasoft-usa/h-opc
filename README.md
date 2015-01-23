@@ -1,4 +1,4 @@
-h-opc
+h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip/branch/master?svg=true)](https://ci.appveyor.com/project/hylasoft/h-opc/branch/master)
 ==============
 
 An Opc Library to perform high level operations. Currently supports synchronous operation over the UA protocol
