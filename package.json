@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-concurrent": "^1.0.0",
+    "grunt-dotnet-assembly-info": "^1.0.18",
+    "grunt-msbuild": "^0.2.2",
+    "grunt-mstest": "^0.1.5",
+    "load-grunt-tasks": "^0.6.0",
+    "time-grunt": "^1.0.0",
+    "grunt-nuget": "~0.1.4"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
