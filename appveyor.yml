@@ -1,0 +1,22 @@
+# appveyor file
+# http://www.appveyor.com/docs/appveyor-yml
+
+init:
+  - git config --global core.autocrlf input
+
+# what combinations to test
+environment:
+  matrix:
+    - nodejs_version: 0.10
+
+install:
+  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version)
+  - npm install -g grunt-cli
+  - npm install
+
+build_script:
+  - node --version
+  - npm --version
+  - grunt test --no-color
+
+test: off # tests are done in the build script
