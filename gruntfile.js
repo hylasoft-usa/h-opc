@@ -12,11 +12,11 @@ module.exports = function(grunt) {
 
     // Set this variables for different projects
     projectName: 'h-opc',
-    testProjectPath: 'h-opc/Tests',
+    testProjectPath: 'tests/',
 
     // These variables shouldn't be changed, but sometimes it might be necessary
-    srcPath: './',
     solutionName: '<%= projectName %>.sln',
+    srcPath: './',
     dotNetVersion: '4.5.0',
     platform: 'Any CPU',
     styleCopRules: 'Settings.StyleCop',

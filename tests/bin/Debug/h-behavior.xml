@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>h-behavior</name>
+    </assembly>
+    <members>
+        <member name="T:Hylasoft.Behavior.Extensions.EnumerableExtensions">
+            <summary>
+            Extensions to check Enumerables
+            </summary>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.EnumerableExtensions.ToContain``2(Hylasoft.Behavior.TestObject{``1},``0)">
+            <summary>
+            Verifies that the specified sequence contains a specified element by using the default equality comparer.
+            </summary>
+            <typeparam name="T">The type of objects in the enumerable</typeparam>
+            <typeparam name="TEnum">The enumerable for type T</typeparam>
+            <param name="test">A Test object for the enumerbale</param>
+            <param name="item">The object to check if it's contained in the test enumerable.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.EnumerableExtensions.ToNotContain``2(Hylasoft.Behavior.TestObject{``1},``0)">
+            <summary>
+            Verifies that the specified sequence doesn't contain a specified element by using the default equality comparer.
+            </summary>
+            <typeparam name="T">The type of objects in the enumerable</typeparam>
+            <typeparam name="TEnum">The enumerable for type T</typeparam>
+            <param name="test">A Test object for the enumerbale</param>
+            <param name="item">The object to check if it's not contained in the test enumerable.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.EnumerableExtensions.ToContain``2(Hylasoft.Behavior.TestObject{``1},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Verifies that the specified sequence contains a specified element by using a specified comparer.
+            </summary>
+            <typeparam name="T">The type of objects in the enumerable</typeparam>
+            <typeparam name="TEnum">The enumerable for type T</typeparam>
+            <param name="test">A Test object for the enumerbale</param>
+            <param name="item">The object to check if it's contained in the test enumerable.</param>
+            <param name="comparer">An equality comparer to compare values.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.EnumerableExtensions.ToNotContain``2(Hylasoft.Behavior.TestObject{``1},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Verifies that the specified sequence doesn't contain a specified element by using a specified comparer.
+            </summary>
+            <typeparam name="T">The type of objects in the enumerable</typeparam>
+            <typeparam name="TEnum">The enumerable for type T</typeparam>
+            <param name="test">A Test object for the enumerbale</param>
+            <param name="item">The object to check if it's not contained in the test enumerable.</param>
+            <param name="comparer">An equality comparer to compare values.</param>
+        </member>
+        <member name="T:Hylasoft.Behavior.Extensions.ExceptionExtensions">
+            <summary>
+            Extensions to check if exceptions are thrown
+            </summary>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.ExceptionExtensions.ToThrowException``1(Hylasoft.Behavior.TestObject{System.Action})">
+            <summary>
+            Expects an exception to be thrown when executing the action
+            </summary>
+            <typeparam name="T">The type of exception that is thrown or any of its supertype</typeparam>
+            <param name="test">the test object that is expected to throw the exception</param>
+        </member>
+        <member name="T:Hylasoft.Behavior.Extensions.ComparableExtensions">
+            <summary>
+            Extensions to check for Comparisons
+            </summary>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.ComparableExtensions.ToBeLessThan``2(Hylasoft.Behavior.TestObject{``1},``0)">
+            <summary>
+            Verifies that the object is less than the specified one
+            </summary>
+            <typeparam name="T">The type of objects to compare</typeparam>
+            <typeparam name="TComp">The Comparer for type T</typeparam>
+            <param name="test">A Test object for the comparer</param>
+            <param name="item">An object to compare with the test object.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.ComparableExtensions.ToBeGreaterThan``2(Hylasoft.Behavior.TestObject{``1},``0)">
+            <summary>
+            Verifies that the object is greater than the specified one
+            </summary>
+            <typeparam name="T">The type of objects to compare</typeparam>
+            <typeparam name="TComp">The Comparer for type T</typeparam>
+            <param name="test">A Test object for the comparer</param>
+            <param name="item">An object to compare with the test object.</param>
+        </member>
+        <member name="T:Hylasoft.Behavior.Spec">
+            <summary>
+            This class represents utility methods to perform BDD-like testing over MsTests
+            </summary>
+        </member>
+        <member name="M:Hylasoft.Behavior.Spec.Expect``1(``0)">
+            <summary>
+            Creates the test object that wraps the specified object. It can be later tested using specific test methods
+            </summary>
+            <typeparam name="T">The type of the specified object</typeparam>
+            <param name="obj">The specified object to wrap inside a test object</param>
+            <returns>A Test Object that wraps the specified object</returns>
+        </member>
+        <member name="T:Hylasoft.Behavior.Extensions.BooleanExtensions">
+            <summary>
+            Extensions to check for boolean values
+            </summary>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.BooleanExtensions.ToBeFalse(Hylasoft.Behavior.TestObject{System.Boolean})">
+            <summary>
+            Verifies that the specified condition is false. The assertion fails if the condition is true.
+            </summary>
+            <param name="test">A boolean test object</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.Extensions.BooleanExtensions.ToBeTrue(Hylasoft.Behavior.TestObject{System.Boolean})">
+            <summary>
+            Verifies that the specified condition is true. The assertion fails if the condition is false.
+            </summary>
+            <param name="test">A boolean test object</param>
+        </member>
+        <member name="T:Hylasoft.Behavior.TestObject`1">
+            <summary>
+            This class represent an object that can be tested against several methods
+            </summary>
+            <typeparam name="T">The type that the Test Object is tesing. based on the type, additional extension methods are available in the Hylasoft.Behavior.Extensions namespace</typeparam>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToBe(System.Object)">
+            <summary>
+            Verifies that two specified generic type data are equal by using the equality operator. The assertion fails if they are not equal.
+            </summary>
+            <param name="expected">The object to compare to. This is the object the unit test expects.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToBe(`0)">
+            <summary>
+            Verifies that two specified generic type data are equal by using the equality operator. The assertion fails if they are not equal.
+            </summary>
+            <param name="expected">The object to compare to. This is the object the unit test expects.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToNotBe(System.Object)">
+            <summary>
+            Verifies that two specified generic type data are not equal. The assertion fails if they are equal.
+            </summary>
+            <param name="expected">The object to compare to. This is the object the unit test expects.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToBeSame(System.Object)">
+            <summary>
+            Verifies that two specified object variables refer to the same object. The assertion fails if they refer to different objects.
+            </summary>
+            <param name="expected">The object to compare to. This is the object the unit test expects.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToNotBeSame(System.Object)">
+            <summary>
+            Verifies that two specified object variables refer to different objects. The assertion fails if they refer to the same object.
+            </summary>
+            <param name="expected">The object to compare to. This is the object the unit test expects.</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToBeNull">
+            <summary>
+            Verifies that the specified object is null. The assertion fails if it is not null.
+            </summary>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToNotBeNull">
+            <summary>
+            Verifies that the specified object is not null. The assertion fails if it is null.
+            </summary>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToBeInstanceOf(System.Type)">
+            <summary>
+            Verifies that the specified object is an instance of the specified type. The assertion fails if the type is not found in the inheritance hierarchy of the object.
+            </summary>
+            <param name="type">The type expected to be found in the inheritance hierarchy of the object</param>
+        </member>
+        <member name="M:Hylasoft.Behavior.TestObject`1.ToNotBeInstanceOf(System.Type)">
+            <summary>
+            Verifies that the specified object is not an instance of the specified type. The assertion fails if the type is found in the inheritance hierarchy of the object.
+            </summary>
+            <param name="type">The type expected to be found in the inheritance hierarchy of the object</param>
+        </member>
+    </members>
+</doc>

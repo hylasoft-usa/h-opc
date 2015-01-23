@@ -1,0 +1,9 @@
+c:\Users\giaco_000\Workspace\h-opc\tests\obj\Debug\tests.csprojResolveAssemblyReference.cache
+c:\Users\giaco_000\Workspace\h-opc\tests\bin\Debug\tests.dll
+c:\Users\giaco_000\Workspace\h-opc\tests\bin\Debug\tests.pdb
+c:\Users\giaco_000\Workspace\h-opc\tests\bin\Debug\tests.dll.CodeAnalysisLog.xml
+c:\Users\giaco_000\Workspace\h-opc\tests\bin\Debug\tests.dll.lastcodeanalysissucceeded
+c:\Users\giaco_000\Workspace\h-opc\tests\bin\Debug\h-behavior.dll
+c:\Users\giaco_000\Workspace\h-opc\tests\bin\Debug\h-behavior.xml
+c:\Users\giaco_000\Workspace\h-opc\tests\obj\Debug\tests.dll
+c:\Users\giaco_000\Workspace\h-opc\tests\obj\Debug\tests.pdb

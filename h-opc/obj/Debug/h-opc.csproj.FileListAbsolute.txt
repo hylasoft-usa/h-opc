@@ -1,0 +1,7 @@
+c:\Users\giaco_000\Workspace\h-opc\h-opc\bin\Debug\h-opc.dll
+c:\Users\giaco_000\Workspace\h-opc\h-opc\bin\Debug\h-opc.pdb
+c:\Users\giaco_000\Workspace\h-opc\h-opc\obj\Debug\h-opc.csprojResolveAssemblyReference.cache
+c:\Users\giaco_000\Workspace\h-opc\h-opc\obj\Debug\h-opc.dll
+c:\Users\giaco_000\Workspace\h-opc\h-opc\obj\Debug\h-opc.pdb
+c:\Users\giaco_000\Workspace\h-opc\h-opc\bin\Debug\h-opc.dll.CodeAnalysisLog.xml
+c:\Users\giaco_000\Workspace\h-opc\h-opc\bin\Debug\h-opc.dll.lastcodeanalysissucceeded
