@@ -1,1 +1,0 @@
-Since it is not possible to have an tools-only package with dependencies, this text file is used as dummy content. Feel free to delete it.
