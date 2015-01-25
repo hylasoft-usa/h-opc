@@ -7,15 +7,15 @@ namespace Hylasoft.Opc.Ua
 {
   public class UaClient : IClient
   {
-    private readonly string _serverUrl;
+    private readonly Uri _serverUrl;
     private Session _session;
-    private Node RootNode;
+    private Node _rootNode;
 
     /// <summary>
     /// Creates a server object
     /// </summary>
     /// <param name="serverUrl">the url of the server to connect to</param>
-    public UaClient(string serverUrl)
+    public UaClient(Uri serverUrl)
     {
       _serverUrl = serverUrl;
       Status = OpcStatus.NotConnected;
@@ -33,7 +33,7 @@ namespace Hylasoft.Opc.Ua
 
     public T Read<T>(string tag)
     {
-      throw new NotImplementedException();
+      throw new NotImplementedException(_session.ToString());
     }
 
     public void Write<T>(string tag, T item)
@@ -48,7 +48,8 @@ namespace Hylasoft.Opc.Ua
 
     public Node FindNode(string tag)
     {
-      
+      _rootNode = new FolderNode(this, tag); // TODO
+      return _rootNode;
     }
 
     #region private methods
@@ -56,20 +57,20 @@ namespace Hylasoft.Opc.Ua
     /// <summary>
     /// Crappy method to initialize the session. I don't know what many of these things do, sincerely.
     /// </summary>
-    private static Session InitializeSession(string url)
+    private static Session InitializeSession(Uri url)
     {
       var l = new CertificateValidator();
       l.CertificateValidation += (sender, eventArgs) =>
       {
         eventArgs.Accept = true;
       };
-      var appInstance = new ApplicationInstance()
+      var appInstance = new ApplicationInstance
       {
         ApplicationType = ApplicationType.Client,
         ConfigSectionName = "h-opc-client",
         ApplicationConfiguration = new ApplicationConfiguration
         {
-          ApplicationUri = url,
+          ApplicationUri = url.ToString(),
           ApplicationName = "h-opc-client",
           ApplicationType = ApplicationType.Client,
           CertificateValidator = l,

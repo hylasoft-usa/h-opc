@@ -22,10 +22,12 @@ namespace Hylasoft.Opc.Ua
     /// <summary>
     /// Gets the list of subnodes from the server
     /// </summary>
-    public IEnumerable<Node> SubNodes 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "WIP")]
+    public IEnumerable<Node> SubNodes
     {
       get
       {
+        _subNodes = null; //TODO
         if (_subNodes != null)
           return _subNodes;
         throw new NotImplementedException();

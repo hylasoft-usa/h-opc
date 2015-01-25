@@ -1,10 +1,6 @@
-﻿using System.Globalization;
-using System.Linq;
+﻿using System.Linq;
 using Opc.Ua;
-using Opc.Ua.Client;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -13,18 +9,16 @@ namespace Hylasoft.Opc.Ua
   /// </summary>
   internal static class ClientUtils
   {
-    public static EndpointDescription SelectEndpoint(string discoveryUrl, bool useSecurity)
+    public static EndpointDescription SelectEndpoint(Uri discoveryUrl, bool useSecurity)
     {
-      if (!discoveryUrl.StartsWith("opc.tcp") && !discoveryUrl.EndsWith("/discovery"))
-        discoveryUrl = discoveryUrl + "/discovery";
-      var discoveryUrl1 = new Uri(discoveryUrl);
+      // TODO I didn't write this method. I should rewrite it once I understand whtat it does, beacuse it looks crazy
       var configuration = EndpointConfiguration.Create();
       configuration.OperationTimeout = 5000;
       EndpointDescription endpointDescription1 = null;
-      using (var discoveryClient = DiscoveryClient.Create(discoveryUrl1, configuration))
+      using (var discoveryClient = DiscoveryClient.Create(discoveryUrl, configuration))
       {
         var endpoints = discoveryClient.GetEndpoints(null);
-        foreach (var endpointDescription2 in endpoints.Where(endpointDescription2 => endpointDescription2.EndpointUrl.StartsWith(discoveryUrl1.Scheme)))
+        foreach (var endpointDescription2 in endpoints.Where(endpointDescription2 => endpointDescription2.EndpointUrl.StartsWith(discoveryUrl.Scheme)))
         {
           if (useSecurity)
           {
@@ -45,11 +39,11 @@ namespace Hylasoft.Opc.Ua
         }
       }
       var uri = Utils.ParseUri(endpointDescription1.EndpointUrl);
-      if (uri != null && uri.Scheme == discoveryUrl1.Scheme)
+      if (uri != null && uri.Scheme == discoveryUrl.Scheme)
         endpointDescription1.EndpointUrl = new UriBuilder(uri)
         {
-          Host = discoveryUrl1.DnsSafeHost,
-          Port = discoveryUrl1.Port
+          Host = discoveryUrl.DnsSafeHost,
+          Port = discoveryUrl.Port
         }.ToString();
       return endpointDescription1;
     }

@@ -5,8 +5,10 @@ namespace Hylasoft.Opc
   /// </summary>
   public abstract class Node
   {
-    protected readonly IClient Client;
-    protected readonly string Tag;
+    protected IClient Client { get; private set; }
+
+    protected string Tag { get; private set; }
+
     private readonly string _id;
 
     /// <summary>

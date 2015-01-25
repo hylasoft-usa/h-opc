@@ -17,6 +17,6 @@ install:
 build_script:
   - node --version
   - npm --version
-  - grunt test --no-color
+  - grunt build --no-color
 
 test: off # tests are done in the build script

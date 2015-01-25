@@ -1,9 +1,9 @@
-﻿using Hylasoft.Behavior;
-using Hylasoft.Opc;
+﻿using System;
+using Hylasoft.Behavior;
 using Hylasoft.Opc.Ua;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace tests
+namespace Hylasoft.Opc.Tests
 {
   [TestClass]
   public class UaTest : Spec
@@ -11,7 +11,7 @@ namespace tests
     [TestMethod]
     public void ConnectTest()
     {
-      var client = new UaClient("opc.tcp://giacomo-hyla:51210/UA/SampleServer");
+      var client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
       Expect(client.Status).ToBe(OpcStatus.NotConnected);
 
       client.Connect();

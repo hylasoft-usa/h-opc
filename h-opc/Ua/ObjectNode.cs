@@ -40,7 +40,7 @@ namespace Hylasoft.Opc.Ua
     {
       Client.Monitor(Tag, callback);
     }
-    
+
     public override NodeType Type
     {
       get { return NodeType.Object; }
