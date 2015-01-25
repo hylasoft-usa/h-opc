@@ -1,5 +1,0 @@
-c:\Users\giaco_000\Workspace\h-opc\h-opc\obj\Release\h-opc.csprojResolveAssemblyReference.cache
-c:\Users\giaco_000\Workspace\h-opc\h-opc\bin\Release\h-opc.dll
-c:\Users\giaco_000\Workspace\h-opc\h-opc\bin\Release\h-opc.pdb
-c:\Users\giaco_000\Workspace\h-opc\h-opc\obj\Release\h-opc.dll
-c:\Users\giaco_000\Workspace\h-opc\h-opc\obj\Release\h-opc.pdb
