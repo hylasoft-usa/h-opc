@@ -1,3 +1,5 @@
+using Opc.Ua;
+
 namespace Hylasoft.Opc
 {
   /// <summary>
@@ -7,9 +9,9 @@ namespace Hylasoft.Opc
   {
     protected IClient Client { get; private set; }
 
-    protected string Tag { get; private set; }
+    public string Tag { get; private set; }
 
-    private readonly string _id;
+    private readonly NodeId _id;
 
     /// <summary>
     /// Creates a new node
@@ -17,8 +19,9 @@ namespace Hylasoft.Opc
     /// <param name="client">the client to use for the queries</param>
     /// <param name="tag">the name of the tag</param>
     /// <param name="id">the id that represent the tag on the server. If it's null, the tag is used as ID</param>
-    protected Node(IClient client, string tag, string id = null)
+    protected Node(IClient client, string tag, NodeId id = null)
     {
+      // TODO I guess we cannot really use NodeId, since it's specific to UA...
       // use the tag if the node is null
       _id = id ?? tag;
       Client = client;
@@ -26,24 +29,28 @@ namespace Hylasoft.Opc
     }
 
     /// <summary>
-    /// The type of node
+    /// The class of node
     /// </summary>
-    public abstract NodeType Type { get; }
+    public abstract NodeClass Class { get; }
 
     /// <summary>
     /// Gets the identifier of the node on the server
     /// </summary>
-    public string Id
+    public NodeId Id
     {
       get { return _id; }
     }
   }
 
-  public enum NodeType
+  public enum NodeClass
   {
-    // the nodes is a folder containing other nodes
+    /// <summary>
+    /// The nodes is a folder containing other nodes
+    /// </summary>
     Folder,
-    // the folder is an object conatining a value
+    /// <summary>
+    /// The folder is an object conatining a value
+    /// </summary>
     Object
   }
 }

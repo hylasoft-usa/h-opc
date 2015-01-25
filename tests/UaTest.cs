@@ -18,5 +18,25 @@ namespace Hylasoft.Opc.Tests
 
       Expect(client.Status).ToBe(OpcStatus.Connected);
     }
+
+    [TestMethod]
+    public void FindNodeTest()
+    {
+      var client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
+      client.Connect();
+
+      var node = client.FindNode("Data.Dynamic.Scalar.SByteValue");
+      Expect(node).ToNotBeNull();
+    }
+
+    [TestMethod]
+    public void ReadNodeTest()
+    {
+      var client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
+      client.Connect();
+
+      var val = client.Read<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
+      Expect(val).ToBe("OPC Foundation");
+    }
   }
 }

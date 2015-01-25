@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Configuration;
@@ -9,7 +11,8 @@ namespace Hylasoft.Opc.Ua
   {
     private readonly Uri _serverUrl;
     private Session _session;
-    private Node _rootNode;
+    private FolderNode _rootNode;
+    private readonly IDictionary<string, Node> _nodesCache = new Dictionary<string, Node>();
 
     /// <summary>
     /// Creates a server object
@@ -26,6 +29,9 @@ namespace Hylasoft.Opc.Ua
       if (Status == OpcStatus.Connected)
         return;
       _session = InitializeSession(_serverUrl);
+      var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
+      _rootNode = new FolderNode(this, "", (NodeId) node.NodeId);
+      AddNodeToCache(_rootNode);
       Status = OpcStatus.Connected;
     }
 
@@ -33,7 +39,21 @@ namespace Hylasoft.Opc.Ua
 
     public T Read<T>(string tag)
     {
-      throw new NotImplementedException(_session.ToString());
+      var n = FindNode(tag);
+      var nodesToRead = new ReadValueIdCollection
+      {
+        new ReadValueId
+        {
+          NodeId = n.Id,
+          AttributeId = 13U
+        }
+      };
+      DataValueCollection results;
+      DiagnosticInfoCollection diag;
+      var res = _session.Read(null, 0, TimestampsToReturn.Neither, nodesToRead, out results, out diag);
+
+      var val = (T) results[0].Value;
+      return val;
     }
 
     public void Write<T>(string tag, T item)
@@ -48,11 +68,58 @@ namespace Hylasoft.Opc.Ua
 
     public Node FindNode(string tag)
     {
-      _rootNode = new FolderNode(this, tag); // TODO
-      return _rootNode;
+      // if the tag already exists in cache, return it
+      if (_nodesCache.ContainsKey(tag))
+        return _nodesCache[tag];
+      
+      // try to find the tag otherwise
+      var found = FindNode(tag, _rootNode);
+      if (found != null)
+      {
+        AddNodeToCache(found);
+        return found;
+      }
+
+      // throws an exception if not found
+      throw new ArgumentException(String.Format("The tag \"{0}\" doesn't exist on the Server", tag), tag);
+    }
+
+    /// <summary>
+    /// Finds a node starting from the specified node as the root folder
+    /// </summary>
+    /// <param name="tag">the tag to find</param>
+    /// <param name="node">the root node</param>
+    /// <returns></returns>
+    private Node FindNode(string tag, Node node)
+    {
+      var folders = tag.Split('.');
+      var head = folders.FirstOrDefault();
+      Node found;
+      try
+      {
+        var subNodes = ClientUtils.Browse(_session, node);
+        found = subNodes.First(n => n.DisplayName == head).ToHylaNode(this);
+      }
+      catch (Exception ex)
+      {
+        throw new ArgumentException(String.Format("The tag \"{0}\" doesn't exist on folder \"{1}\"", head, node.Tag), tag, ex);
+      }
+
+      return folders.Length == 1
+        ? found // last node, return it
+        : FindNode(string.Join(".", folders.Except(new[] { head })), found); // find sub nodes
     }
 
     #region private methods
+
+    /// <summary>
+    /// Adds a node to the cache using the tag as its key
+    /// </summary>
+    /// <param name="node">the node to add</param>
+    private void AddNodeToCache(Node node)
+    {
+      _nodesCache.Add(node.Tag, node);    
+    }
 
     /// <summary>
     /// Crappy method to initialize the session. I don't know what many of these things do, sincerely.

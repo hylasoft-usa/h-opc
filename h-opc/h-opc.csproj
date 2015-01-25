@@ -61,7 +61,7 @@
     <Compile Include="Ua\FolderNode.cs" />
     <Compile Include="Ua\UaClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ua\ObjectNode.cs" />
+    <Compile Include="Ua\ValueNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

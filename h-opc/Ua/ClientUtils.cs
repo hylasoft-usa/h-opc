@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Opc.Ua;
 using System;
+using Opc.Ua.Client;
+using OpcF = Opc.Ua;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -9,9 +11,10 @@ namespace Hylasoft.Opc.Ua
   /// </summary>
   internal static class ClientUtils
   {
+    // TODO I didn't write these method. I should rewrite it once I understand whtat it does, beacuse it looks crazy
+
     public static EndpointDescription SelectEndpoint(Uri discoveryUrl, bool useSecurity)
     {
-      // TODO I didn't write this method. I should rewrite it once I understand whtat it does, beacuse it looks crazy
       var configuration = EndpointConfiguration.Create();
       configuration.OperationTimeout = 5000;
       EndpointDescription endpointDescription1 = null;
@@ -46,6 +49,69 @@ namespace Hylasoft.Opc.Ua
           Port = discoveryUrl.Port
         }.ToString();
       return endpointDescription1;
+    }
+
+    public static ReferenceDescriptionCollection Browse(Session session, Node node)
+    {
+      var desc = new BrowseDescription
+      {
+        NodeId = node.Id,
+        BrowseDirection = BrowseDirection.Forward,
+        IncludeSubtypes = true,
+        NodeClassMask = 0U,
+        ResultMask = 63U,
+      };
+      return Browse(session, desc, true);
+    }
+
+
+    public static ReferenceDescriptionCollection Browse(Session session, BrowseDescription nodeToBrowse, bool throwOnError)
+    {
+      try
+      {
+        var descriptionCollection = new ReferenceDescriptionCollection();
+        var nodesToBrowse = new BrowseDescriptionCollection {nodeToBrowse};
+        BrowseResultCollection results;
+        DiagnosticInfoCollection diagnosticInfos;
+        session.Browse(null, null, 0U, nodesToBrowse, out results, out diagnosticInfos);
+        ClientBase.ValidateResponse(results, nodesToBrowse);
+        ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToBrowse);
+        while (!StatusCode.IsBad(results[0].StatusCode))
+        {
+          for (var index = 0; index < results[0].References.Count; ++index)
+            descriptionCollection.Add(results[0].References[index]);
+          if (results[0].References.Count == 0 || results[0].ContinuationPoint == null)
+            return descriptionCollection;
+          var continuationPoints = new ByteStringCollection();
+          continuationPoints.Add(results[0].ContinuationPoint);
+          session.BrowseNext(null, false, continuationPoints, out results, out diagnosticInfos);
+          ClientBase.ValidateResponse(results, continuationPoints);
+          ClientBase.ValidateDiagnosticInfos(diagnosticInfos, continuationPoints);
+        }
+        throw new ServiceResultException(results[0].StatusCode);
+      }
+      catch (Exception ex)
+      {
+        if (throwOnError)
+          throw new ServiceResultException(ex, 2147549184U);
+        return null;
+      }
+    }
+  }
+
+  public static class NodeExtensions
+  {
+    public static Node ToHylaNode(this ReferenceDescription node, UaClient client)
+    {
+      switch (node.NodeClass)
+      {
+        case OpcF.NodeClass.Object:
+          return new FolderNode(client, node.DisplayName.ToString(), (NodeId) node.NodeId);
+        case OpcF.NodeClass.Variable:
+          return new ValueNode<object>(client, node.DisplayName.ToString(), (NodeId) node.NodeId);
+        default:
+          throw new ArgumentOutOfRangeException(string.Format("the node class {0} is not supported yet", node.NodeClass));
+      }
     }
   }
 }

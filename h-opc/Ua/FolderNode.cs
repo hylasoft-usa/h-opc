@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Opc.Ua;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -10,13 +11,14 @@ namespace Hylasoft.Opc.Ua
   {
     private IEnumerable<Node> _subNodes;
 
-    public FolderNode(IClient client, string tag) : base(client, tag)
+    public FolderNode(IClient client, string tag, NodeId id = null)
+      : base(client, tag, id)
     {
     }
 
-    public override NodeType Type
+    public override NodeClass Class
     {
-      get { return NodeType.Folder; }
+      get { return NodeClass.Folder; }
     }
 
     /// <summary>

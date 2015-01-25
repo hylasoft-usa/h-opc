@@ -38,5 +38,13 @@ namespace Hylasoft.Opc
     /// <param name="callback">the callback to execute when the value is changed.
     /// The callback gets executed every time the value gets changed</param>
     void Monitor<T>(string tag, Action<T> callback);
+
+    /// <summary>
+    /// Finds a node on the Opc Server
+    /// </summary>
+    /// <param name="tag">the identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` finds the tag `bar` on the folder `foo`</param>
+    /// <returns>If there is a tag, it returns it, otherwise it throws an </returns>
+    Node FindNode(string tag);
   }
 }

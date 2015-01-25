@@ -1,4 +1,5 @@
 ﻿using System;
+using Opc.Ua;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -6,10 +7,10 @@ namespace Hylasoft.Opc.Ua
   /// A node that holds a value
   /// </summary>
   /// <typeparam name="T">The type of value that the node contains</typeparam>
-  public class ObjectNode<T> : Node
+  public class ValueNode<T> : Node
   {
-    public ObjectNode(IClient client, string tag)
-      : base(client, tag)
+    public ValueNode(IClient client, string tag, NodeId id = null)
+      : base(client, tag, id)
     {
     }
 
@@ -41,9 +42,9 @@ namespace Hylasoft.Opc.Ua
       Client.Monitor(Tag, callback);
     }
 
-    public override NodeType Type
+    public override NodeClass Class
     {
-      get { return NodeType.Object; }
+      get { return NodeClass.Object; }
     }
   }
 }
