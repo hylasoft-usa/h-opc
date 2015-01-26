@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Hylasoft.Opc.Tests
 {
-  [TestClass]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Test Class"), TestClass]
   public class UaTest : Spec
   {
     private UaClient _client;
@@ -52,7 +52,7 @@ namespace Hylasoft.Opc.Tests
     {
       const string tag = "Data.Static.Scalar.ByteValue";
 
-      _client.Write(tag, (byte) 3);
+      _client.Write(tag, (byte)3);
       var val = _client.Read<byte>(tag);
       Expect(val).ToBe(3);
 
@@ -73,7 +73,7 @@ namespace Hylasoft.Opc.Tests
         .ToThrowException<OpcException>();
 
       // fails for not writing allowed
-      Expect<Action>(() =>_client.Write("Server.ServerStatus.BuildInfo.ManufacturerName", "READ ONLY"))
+      Expect<Action>(() => _client.Write("Server.ServerStatus.BuildInfo.ManufacturerName", "READ ONLY"))
         .ToThrowException<OpcException>();
     }
 

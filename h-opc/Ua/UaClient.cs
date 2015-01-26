@@ -62,7 +62,7 @@ namespace Hylasoft.Opc.Ua
       var val = results[0];
 
       CheckReturnValue(val.StatusCode);
-      return (T) val.Value;
+      return (T)val.Value;
     }
 
     public void Write<T>(string tag, T item)
@@ -108,9 +108,9 @@ namespace Hylasoft.Opc.Ua
 
       item.Notification += (monitoredItem, args) =>
       {
-        var p = (MonitoredItemNotification) args.NotificationValue;
+        var p = (MonitoredItemNotification)args.NotificationValue;
         var t = p.Value.WrappedValue.Value;
-        callback((T) t, () => _session.RemoveSubscription(sub));
+        callback((T)t, () => _session.RemoveSubscription(sub));
       };
     }
 
@@ -156,6 +156,7 @@ namespace Hylasoft.Opc.Ua
       _session.RemoveSubscriptions(_session.Subscriptions);
       _session.Close();
       _session.Dispose();
+      GC.SuppressFinalize(this);
     }
 
     #endregion

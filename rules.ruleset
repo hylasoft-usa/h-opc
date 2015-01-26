@@ -60,7 +60,7 @@
     <Rule Id="CA1060" Action="Error" />
     <Rule Id="CA1061" Action="Error" />
     <Rule Id="CA1062" Action="None" />
-    <Rule Id="CA1063" Action="Error" />
+    <Rule Id="CA1063" Action="None" />
     <Rule Id="CA1064" Action="Error" />
     <Rule Id="CA1065" Action="Error" />
     <Rule Id="CA1300" Action="None" />
