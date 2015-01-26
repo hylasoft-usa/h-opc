@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hylasoft.Opc.Common;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Configuration;
 
 namespace Hylasoft.Opc.Ua
 {
-  public class UaClient : IClient
+  public class UaClient : IClient<OpcNode>
   {
     private readonly Uri _serverUrl;
     private Session _session;
-    private FolderNode _rootNode;
-    private readonly IDictionary<string, Node> _nodesCache = new Dictionary<string, Node>();
+    private readonly IDictionary<string, OpcNode> _nodesCache = new Dictionary<string, OpcNode>();
 
     /// <summary>
     /// Creates a server object
@@ -24,14 +24,16 @@ namespace Hylasoft.Opc.Ua
       Status = OpcStatus.NotConnected;
     }
 
+    #region interface methods
+
     public void Connect()
     {
       if (Status == OpcStatus.Connected)
         return;
       _session = InitializeSession(_serverUrl);
       var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
-      _rootNode = new FolderNode(this, "", (NodeId) node.NodeId);
-      AddNodeToCache(_rootNode);
+      RootNode = new OpcNode(this, string.Empty, node.NodeId.ToString());
+      AddNodeToCache(RootNode);
       Status = OpcStatus.Connected;
     }
 
@@ -39,20 +41,19 @@ namespace Hylasoft.Opc.Ua
 
     public T Read<T>(string tag)
     {
-      var n = FindNode(tag);
+      var n = FindNode(tag, RootNode);
       var nodesToRead = new ReadValueIdCollection
       {
         new ReadValueId
         {
-          NodeId = n.Id,
+          NodeId = n.NodeId,
           AttributeId = 13U
         }
       };
       DataValueCollection results;
       DiagnosticInfoCollection diag;
-      var res = _session.Read(null, 0, TimestampsToReturn.Neither, nodesToRead, out results, out diag);
-
-      var val = (T) results[0].Value;
+      _session.Read(null, 0, TimestampsToReturn.Neither, nodesToRead, out results, out diag);
+      var val = (T)results[0].Value;
       return val;
     }
 
@@ -66,14 +67,28 @@ namespace Hylasoft.Opc.Ua
       throw new NotImplementedException();
     }
 
-    public Node FindNode(string tag)
+    public IEnumerable<OpcNode> ExploreFolder(string tag)
+    {
+      var folder = FindNode(tag);
+      var nodes = ClientUtils.Browse(_session, folder.NodeId)
+        .GroupBy(n => n.NodeId) //this is to select distinct
+        .Select(n => n.First())
+        .Where(n => n.NodeClass == NodeClass.Variable || n.NodeClass == NodeClass.Object)
+        .Select(n => n.ToHylaNode(this, folder))
+        .ToList();
+      foreach (var node in nodes)
+        AddNodeToCache(node);
+      return nodes;
+    }
+
+    public OpcNode FindNode(string tag)
     {
       // if the tag already exists in cache, return it
       if (_nodesCache.ContainsKey(tag))
         return _nodesCache[tag];
-      
+
       // try to find the tag otherwise
-      var found = FindNode(tag, _rootNode);
+      var found = FindNode(tag, RootNode);
       if (found != null)
       {
         AddNodeToCache(found);
@@ -81,34 +96,12 @@ namespace Hylasoft.Opc.Ua
       }
 
       // throws an exception if not found
-      throw new ArgumentException(String.Format("The tag \"{0}\" doesn't exist on the Server", tag), tag);
+      throw new ArgumentException(string.Format("The tag \"{0}\" doesn't exist on the Server", tag), tag);
     }
 
-    /// <summary>
-    /// Finds a node starting from the specified node as the root folder
-    /// </summary>
-    /// <param name="tag">the tag to find</param>
-    /// <param name="node">the root node</param>
-    /// <returns></returns>
-    private Node FindNode(string tag, Node node)
-    {
-      var folders = tag.Split('.');
-      var head = folders.FirstOrDefault();
-      Node found;
-      try
-      {
-        var subNodes = ClientUtils.Browse(_session, node);
-        found = subNodes.First(n => n.DisplayName == head).ToHylaNode(this);
-      }
-      catch (Exception ex)
-      {
-        throw new ArgumentException(String.Format("The tag \"{0}\" doesn't exist on folder \"{1}\"", head, node.Tag), tag, ex);
-      }
+    public OpcNode RootNode { get; private set; }
 
-      return folders.Length == 1
-        ? found // last node, return it
-        : FindNode(string.Join(".", folders.Except(new[] { head })), found); // find sub nodes
-    }
+    #endregion
 
     #region private methods
 
@@ -116,9 +109,10 @@ namespace Hylasoft.Opc.Ua
     /// Adds a node to the cache using the tag as its key
     /// </summary>
     /// <param name="node">the node to add</param>
-    private void AddNodeToCache(Node node)
+    private void AddNodeToCache(OpcNode node)
     {
-      _nodesCache.Add(node.Tag, node);    
+      if (!_nodesCache.ContainsKey(node.Tag))
+        _nodesCache.Add(node.Tag, node);
     }
 
     /// <summary>
@@ -171,6 +165,32 @@ namespace Hylasoft.Opc.Ua
         appInstance.ApplicationConfiguration.ApplicationName, 60000U, null, new string[] { });
 
       return session;
+    }
+
+    /// <summary>
+    /// Finds a node starting from the specified node as the root folder
+    /// </summary>
+    /// <param name="tag">the tag to find</param>
+    /// <param name="node">the root node</param>
+    /// <returns></returns>
+    private OpcNode FindNode(string tag, OpcNode node)
+    {
+      var folders = tag.Split('.');
+      var head = folders.FirstOrDefault();
+      OpcNode found;
+      try
+      {
+        var subNodes = ExploreFolder(node.Tag);
+        found = subNodes.Single(n => n.Name == head);
+      }
+      catch (Exception ex)
+      {
+        throw new ArgumentException(string.Format("The tag \"{0}\" doesn't exist on folder \"{1}\"", head, node.Tag), tag, ex);
+      }
+
+      return folders.Length == 1
+        ? found // last node, return it
+        : FindNode(string.Join(".", folders.Except(new[] { head })), found); // find sub nodes
     }
 
     #endregion

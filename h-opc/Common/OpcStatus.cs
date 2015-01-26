@@ -1,4 +1,4 @@
-﻿namespace Hylasoft.Opc
+﻿namespace Hylasoft.Opc.Common
 {
   /// <summary>
   /// Identifies the status of an OPC connector

@@ -2,7 +2,6 @@
 using Opc.Ua;
 using System;
 using Opc.Ua.Client;
-using OpcF = Opc.Ua;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -51,11 +50,11 @@ namespace Hylasoft.Opc.Ua
       return endpointDescription1;
     }
 
-    public static ReferenceDescriptionCollection Browse(Session session, Node node)
+    public static ReferenceDescriptionCollection Browse(Session session, NodeId nodeId)
     {
       var desc = new BrowseDescription
       {
-        NodeId = node.Id,
+        NodeId = nodeId,
         BrowseDirection = BrowseDirection.Forward,
         IncludeSubtypes = true,
         NodeClassMask = 0U,
@@ -64,13 +63,12 @@ namespace Hylasoft.Opc.Ua
       return Browse(session, desc, true);
     }
 
-
     public static ReferenceDescriptionCollection Browse(Session session, BrowseDescription nodeToBrowse, bool throwOnError)
     {
       try
       {
         var descriptionCollection = new ReferenceDescriptionCollection();
-        var nodesToBrowse = new BrowseDescriptionCollection {nodeToBrowse};
+        var nodesToBrowse = new BrowseDescriptionCollection { nodeToBrowse };
         BrowseResultCollection results;
         DiagnosticInfoCollection diagnosticInfos;
         session.Browse(null, null, 0U, nodesToBrowse, out results, out diagnosticInfos);
@@ -95,22 +93,6 @@ namespace Hylasoft.Opc.Ua
         if (throwOnError)
           throw new ServiceResultException(ex, 2147549184U);
         return null;
-      }
-    }
-  }
-
-  public static class NodeExtensions
-  {
-    public static Node ToHylaNode(this ReferenceDescription node, UaClient client)
-    {
-      switch (node.NodeClass)
-      {
-        case OpcF.NodeClass.Object:
-          return new FolderNode(client, node.DisplayName.ToString(), (NodeId) node.NodeId);
-        case OpcF.NodeClass.Variable:
-          return new ValueNode<object>(client, node.DisplayName.ToString(), (NodeId) node.NodeId);
-        default:
-          throw new ArgumentOutOfRangeException(string.Format("the node class {0} is not supported yet", node.NodeClass));
       }
     }
   }

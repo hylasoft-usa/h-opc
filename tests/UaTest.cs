@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Hylasoft.Behavior;
 using Hylasoft.Opc.Ua;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,35 +9,37 @@ namespace Hylasoft.Opc.Tests
   [TestClass]
   public class UaTest : Spec
   {
-    [TestMethod]
-    public void ConnectTest()
+    private UaClient _client;
+
+    [TestInitialize]
+    public void Init()
     {
-      var client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
-      Expect(client.Status).ToBe(OpcStatus.NotConnected);
-
-      client.Connect();
-
-      Expect(client.Status).ToBe(OpcStatus.Connected);
+      _client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
+      _client.Connect();
     }
 
     [TestMethod]
     public void FindNodeTest()
     {
-      var client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
-      client.Connect();
-
-      var node = client.FindNode("Data.Dynamic.Scalar.SByteValue");
+      var node = _client.FindNode("Data.Dynamic.Scalar.SByteValue");
       Expect(node).ToNotBeNull();
     }
 
     [TestMethod]
     public void ReadNodeTest()
     {
-      var client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
-      client.Connect();
-
-      var val = client.Read<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
+      var val = _client.Read<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
       Expect(val).ToBe("OPC Foundation");
+    }
+
+    [TestMethod]
+    public void BrowseFolderTest()
+    {
+      var node = _client.FindNode("Server.ServerStatus.BuildInfo");
+
+      // ReSharper disable once PossibleNullReferenceException
+      var subNodes = node.SubNodes;
+      Expect(subNodes.Count()).ToBe(6);
     }
   }
 }
