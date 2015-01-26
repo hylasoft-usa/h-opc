@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using Hylasoft.Behavior;
 using Hylasoft.Behavior.Extensions;
 using Hylasoft.Opc.Common;
@@ -18,6 +19,12 @@ namespace Hylasoft.Opc.Tests
     {
       _client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
       _client.Connect();
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+      _client.Dispose();
     }
 
     [TestMethod]
@@ -90,6 +97,39 @@ namespace Hylasoft.Opc.Tests
       // ReSharper disable once PossibleNullReferenceException
       var subNodes = node.SubNodes;
       Expect(subNodes.Count()).ToBe(6);
+    }
+
+    [TestMethod]
+    public void MonitorTest()
+    {
+      const string tag = "Data.Static.Scalar.ByteValue";
+      var executed = 0;
+      _client.Monitor<byte>(tag, (val1, u) =>
+      {
+        executed++;
+        u();
+      });
+      _client.Monitor<byte>(tag, (val1, u) =>
+      {
+        executed++;
+        u();
+      });
+      _client.Monitor<byte>(tag, (val1, u) =>
+      {
+        executed++;
+        u();
+      });
+      const int interval = 100;
+      Thread.Sleep(interval);
+      _client.Write(tag, (byte)10);
+      Thread.Sleep(interval);
+      _client.Write(tag, (byte)11);
+      Thread.Sleep(interval);
+      _client.Write(tag, (byte)12);
+      Thread.Sleep(interval);
+      _client.Write(tag, (byte)13);
+      Thread.Sleep(interval);
+      Expect(executed).ToBe(3);
     }
   }
 }

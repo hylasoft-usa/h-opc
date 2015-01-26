@@ -14,6 +14,12 @@ namespace Hylasoft.Opc.Ua
     private Session _session;
     private readonly IDictionary<string, OpcNode> _nodesCache = new Dictionary<string, OpcNode>();
 
+    // default monitor interval in Milliseconds
+    private const int DefaultMonitorInterval = 100;
+
+    // TODO undestand if this has to be parametric
+    private const uint AttributeId = 13U;
+
     /// <summary>
     /// Creates a server object
     /// </summary>
@@ -47,7 +53,7 @@ namespace Hylasoft.Opc.Ua
         new ReadValueId
         {
           NodeId = n.NodeId,
-          AttributeId = 13U
+          AttributeId = AttributeId
         }
       };
       DataValueCollection results;
@@ -65,7 +71,7 @@ namespace Hylasoft.Opc.Ua
       var writeValue = new WriteValue
       {
         NodeId = n.NodeId,
-        AttributeId = 13U,
+        AttributeId = AttributeId,
         Value = { Value = item }
       };
       var nodesToWrite = new WriteValueCollection { writeValue };
@@ -76,9 +82,36 @@ namespace Hylasoft.Opc.Ua
       CheckReturnValue(results[0]);
     }
 
-    public void Monitor<T>(string tag, Action<T> callback)
+    public void Monitor<T>(string tag, Action<T, Action> callback)
     {
-      throw new NotImplementedException();
+      var node = FindNode(tag);
+
+      var sub = new Subscription
+      {
+        PublishingInterval = DefaultMonitorInterval,
+        PublishingEnabled = true,
+        DisplayName = tag,
+        Priority = byte.MaxValue
+      };
+
+      var item = new MonitoredItem
+      {
+        StartNodeId = node.NodeId,
+        AttributeId = AttributeId,
+        DisplayName = tag,
+        SamplingInterval = DefaultMonitorInterval,
+      };
+      sub.AddItem(item);
+      _session.AddSubscription(sub);
+      sub.Create();
+      sub.ApplyChanges();
+
+      item.Notification += (monitoredItem, args) =>
+      {
+        var p = (MonitoredItemNotification) args.NotificationValue;
+        var t = p.Value.WrappedValue.Value;
+        callback((T) t, () => _session.RemoveSubscription(sub));
+      };
     }
 
     public IEnumerable<OpcNode> ExploreFolder(string tag)
@@ -117,6 +150,13 @@ namespace Hylasoft.Opc.Ua
     }
 
     public OpcNode RootNode { get; private set; }
+
+    public void Dispose()
+    {
+      _session.RemoveSubscriptions(_session.Subscriptions);
+      _session.Close();
+      _session.Dispose();
+    }
 
     #endregion
 
@@ -217,6 +257,5 @@ namespace Hylasoft.Opc.Ua
     }
 
     #endregion
-
   }
 }
