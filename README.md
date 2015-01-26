@@ -3,9 +3,57 @@ h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98
 
 An Opc Library to perform high level operations. Currently supports synchronous operation over the UA protocol
 
-## Example
+## Usage
 
-TODO
+to use the UA Client simply...
+
+````cs
+using (var client = new UaClient(new Uri("opc.tcp://host-url")))
+{
+  // Use `client` here
+}
+````
+
+#### Read a node
+
+Reading a variable? As simple as...
+
+````cs
+var myString = client.Read<string>("path.to.string");
+var myInt = client.Read<int>("path.to.num");
+````
+
+The example above will read a string from the tags `string` and `num` in the folder `path.to`
+
+#### Writing to a node
+
+To write a value just...
+
+````cs
+client.Write("path.to.string", "My new value");
+client.Write("path.to.num", 42);
+````
+
+#### Monitoring a tag
+
+Dead-simple monitoring:
+
+````cs
+client.Monitor<string>("path.to.string", (newValue, unsubscribe) =>
+{
+  DoSomethingWithYourValue(newValue);
+  if(ThatsEnough == true)
+    unsubscribe();
+});
+
+````
+
+The second is an `Action<T, Action>` that has two parameter:
+
+- `newValue` is the new value of the tag
+- `unsubscribe` is a function that unsubscribes the current monitored item. It's very handy when you want to terminate your callback
+
+it's **important** that you either enclose the client into a `using` statement or call `Dispose()` when you are finished, to unsubscribe all the monitored items and terminate the connection!
 
 ## Build + Contribute
 
