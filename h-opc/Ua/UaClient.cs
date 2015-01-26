@@ -53,13 +53,27 @@ namespace Hylasoft.Opc.Ua
       DataValueCollection results;
       DiagnosticInfoCollection diag;
       _session.Read(null, 0, TimestampsToReturn.Neither, nodesToRead, out results, out diag);
-      var val = (T)results[0].Value;
-      return val;
+      var val = results[0];
+
+      CheckReturnValue(val.StatusCode);
+      return (T) val.Value;
     }
 
     public void Write<T>(string tag, T item)
     {
-      throw new NotImplementedException();
+      var n = FindNode(tag, RootNode);
+      var writeValue = new WriteValue
+      {
+        NodeId = n.NodeId,
+        AttributeId = 13U,
+        Value = { Value = item }
+      };
+      var nodesToWrite = new WriteValueCollection { writeValue };
+
+      StatusCodeCollection results;
+      DiagnosticInfoCollection diag;
+      _session.Write(null, nodesToWrite, out results, out diag);
+      CheckReturnValue(results[0]);
     }
 
     public void Monitor<T>(string tag, Action<T> callback)
@@ -76,8 +90,11 @@ namespace Hylasoft.Opc.Ua
         .Where(n => n.NodeClass == NodeClass.Variable || n.NodeClass == NodeClass.Object)
         .Select(n => n.ToHylaNode(this, folder))
         .ToList();
+
+      //add nodes to cache
       foreach (var node in nodes)
         AddNodeToCache(node);
+
       return nodes;
     }
 
@@ -96,7 +113,7 @@ namespace Hylasoft.Opc.Ua
       }
 
       // throws an exception if not found
-      throw new ArgumentException(string.Format("The tag \"{0}\" doesn't exist on the Server", tag), tag);
+      throw new OpcException(string.Format("The tag \"{0}\" doesn't exist on the Server", tag));
     }
 
     public OpcNode RootNode { get; private set; }
@@ -104,6 +121,12 @@ namespace Hylasoft.Opc.Ua
     #endregion
 
     #region private methods
+
+    private static void CheckReturnValue(StatusCode status)
+    {
+      if (status.ToString() != "Good")
+        throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0})", status));
+    }
 
     /// <summary>
     /// Adds a node to the cache using the tag as its key
@@ -185,7 +208,7 @@ namespace Hylasoft.Opc.Ua
       }
       catch (Exception ex)
       {
-        throw new ArgumentException(string.Format("The tag \"{0}\" doesn't exist on folder \"{1}\"", head, node.Tag), tag, ex);
+        throw new OpcException(string.Format("The tag \"{0}\" doesn't exist on folder \"{1}\"", head, node.Tag), ex);
       }
 
       return folders.Length == 1

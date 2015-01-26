@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Hylasoft.Behavior;
+using Hylasoft.Behavior.Extensions;
+using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Ua;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,6 +21,12 @@ namespace Hylasoft.Opc.Tests
     }
 
     [TestMethod]
+    public void StatusTest()
+    {
+      Expect(_client.Status).ToBe(OpcStatus.Connected);
+    }
+
+    [TestMethod]
     public void FindNodeTest()
     {
       var node = _client.FindNode("Data.Dynamic.Scalar.SByteValue");
@@ -30,6 +38,48 @@ namespace Hylasoft.Opc.Tests
     {
       var val = _client.Read<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
       Expect(val).ToBe("OPC Foundation");
+    }
+
+    [TestMethod]
+    public void WriteNodeTest()
+    {
+      const string tag = "Data.Static.Scalar.ByteValue";
+
+      _client.Write(tag, (byte) 3);
+      var val = _client.Read<byte>(tag);
+      Expect(val).ToBe(3);
+
+      _client.Write(tag, (byte)13);
+      val = _client.Read<byte>(tag);
+      Expect(val).ToBe(13);
+    }
+
+    [TestMethod]
+    public void FailWriteTest()
+    {
+      // fails for wrong tag
+      Expect<Action>(() => _client.Write("WRONG TAG", (byte)3))
+        .ToThrowException<OpcException>();
+
+      // fails for wrong type
+      Expect<Action>(() => _client.Write("Data.Static.Scalar.ByteValue", "WRONG TYPE"))
+        .ToThrowException<OpcException>();
+
+      // fails for not writing allowed
+      Expect<Action>(() =>_client.Write("Server.ServerStatus.BuildInfo.ManufacturerName", "READ ONLY"))
+        .ToThrowException<OpcException>();
+    }
+
+    [TestMethod]
+    public void FailReadTest()
+    {
+      // fails for wrong tag
+      Expect<Action>(() => _client.Read<int>("XXXXXX"))
+        .ToThrowException<OpcException>();
+
+      // fails for not readable tag
+      Expect<Action>(() => _client.Read<string>("Server"))
+        .ToThrowException<OpcException>();
     }
 
     [TestMethod]
