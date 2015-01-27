@@ -3,6 +3,12 @@ h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98
 
 An Opc Library to perform high level operations. Currently supports synchronous operation over the UA protocol
 
+## Nuget
+
+A [nuget package](https://www.nuget.org/packages/Hylasoft.Opc/) is available. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
+
+    PM> Install-Package Hylasoft.Opc
+
 ## Usage
 
 to use the UA Client simply...

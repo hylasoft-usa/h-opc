@@ -13,6 +13,7 @@ module.exports = function(grunt) {
     // Set this variables for different projects
     projectName: 'h-opc',
     testProjectPath: 'tests/',
+    nuspecFile: 'package.nuspec',
 
     // These variables shouldn't be changed, but sometimes it might be necessary
     solutionName: '<%= projectName %>.sln',
