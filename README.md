@@ -14,6 +14,24 @@ using (var client = new UaClient(new Uri("opc.tcp://host-url")))
 }
 ````
 
+#### Exploring the nodes
+
+You can get a reference to a node with...
+
+````cs
+var node = client.FindNode("path.to.my.node");
+````
+
+This will get you a reference to the node `node` in the folder `path.to.my`.
+
+You can use the node reference to explore the hieriarchy of nodes with the properties `Parent` and `SubNodes`. For example...
+
+````cs
+Node parentNode = node.Parent;
+IEnumerable<Node> children = node.SubNodes;
+IENumerable<Node> grandChildren = children.SelectMany(m => m.SubNodes);
+````
+
 #### Read a node
 
 Reading a variable? As simple as...
