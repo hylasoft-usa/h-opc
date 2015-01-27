@@ -8,11 +8,11 @@ using Opc.Ua.Configuration;
 
 namespace Hylasoft.Opc.Ua
 {
-  public class UaClient : IClient<OpcNode>
+  public class UaClient : IClient<UaNode>
   {
     private readonly Uri _serverUrl;
     private Session _session;
-    private readonly IDictionary<string, OpcNode> _nodesCache = new Dictionary<string, OpcNode>();
+    private readonly IDictionary<string, UaNode> _nodesCache = new Dictionary<string, UaNode>();
 
     // default monitor interval in Milliseconds
     private const int DefaultMonitorInterval = 100;
@@ -38,7 +38,7 @@ namespace Hylasoft.Opc.Ua
         return;
       _session = InitializeSession(_serverUrl);
       var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
-      RootNode = new OpcNode(this, string.Empty, node.NodeId.ToString());
+      RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
       AddNodeToCache(RootNode);
       Status = OpcStatus.Connected;
     }
@@ -114,7 +114,7 @@ namespace Hylasoft.Opc.Ua
       };
     }
 
-    public IEnumerable<OpcNode> ExploreFolder(string tag)
+    public IEnumerable<UaNode> ExploreFolder(string tag)
     {
       var folder = FindNode(tag);
       var nodes = ClientUtils.Browse(_session, folder.NodeId)
@@ -131,7 +131,7 @@ namespace Hylasoft.Opc.Ua
       return nodes;
     }
 
-    public OpcNode FindNode(string tag)
+    public UaNode FindNode(string tag)
     {
       // if the tag already exists in cache, return it
       if (_nodesCache.ContainsKey(tag))
@@ -149,7 +149,7 @@ namespace Hylasoft.Opc.Ua
       throw new OpcException(string.Format("The tag \"{0}\" doesn't exist on the Server", tag));
     }
 
-    public OpcNode RootNode { get; private set; }
+    public UaNode RootNode { get; private set; }
 
     public void Dispose()
     {
@@ -173,7 +173,7 @@ namespace Hylasoft.Opc.Ua
     /// Adds a node to the cache using the tag as its key
     /// </summary>
     /// <param name="node">the node to add</param>
-    private void AddNodeToCache(OpcNode node)
+    private void AddNodeToCache(UaNode node)
     {
       if (!_nodesCache.ContainsKey(node.Tag))
         _nodesCache.Add(node.Tag, node);
@@ -237,11 +237,11 @@ namespace Hylasoft.Opc.Ua
     /// <param name="tag">the tag to find</param>
     /// <param name="node">the root node</param>
     /// <returns></returns>
-    private OpcNode FindNode(string tag, OpcNode node)
+    private UaNode FindNode(string tag, UaNode node)
     {
       var folders = tag.Split('.');
       var head = folders.FirstOrDefault();
-      OpcNode found;
+      UaNode found;
       try
       {
         var subNodes = ExploreFolder(node.Tag);

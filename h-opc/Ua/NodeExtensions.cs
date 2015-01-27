@@ -5,11 +5,11 @@ namespace Hylasoft.Opc.Ua
 {
   public static class NodeExtensions
   {
-    public static OpcNode ToHylaNode(this OpcF.ReferenceDescription node, UaClient client, Node parent = null)
+    public static UaNode ToHylaNode(this OpcF.ReferenceDescription node, UaClient client, Node parent = null)
     {
       var name = node.DisplayName.ToString();
       var nodeId = node.NodeId.ToString();
-      return new OpcNode(client, name, nodeId, parent);
+      return new UaNode(client, name, nodeId, parent);
     }
   }
 }

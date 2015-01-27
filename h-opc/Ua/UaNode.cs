@@ -3,11 +3,14 @@ using Hylasoft.Opc.Common.Nodes;
 
 namespace Hylasoft.Opc.Ua
 {
-  public class OpcNode : Node
+  /// <summary>
+  /// Represents a node to be used specifically for OPC UA
+  /// </summary>
+  public class UaNode : Node
   {
     public string NodeId { get; private set; }
 
-    public OpcNode(IClient<OpcNode> client, string name, string nodeId, Node parent = null)
+    public UaNode(IClient<UaNode> client, string name, string nodeId, Node parent = null)
       : base(client, name, parent)
     {
       NodeId = nodeId;

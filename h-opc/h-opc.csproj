@@ -60,7 +60,7 @@
     <Compile Include="Common\OpcStatus.cs" />
     <Compile Include="Ua\ClientUtils.cs" />
     <Compile Include="Ua\NodeExtensions.cs" />
-    <Compile Include="Ua\OpcNode.cs" />
+    <Compile Include="Ua\UaNode.cs" />
     <Compile Include="Ua\UaClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
