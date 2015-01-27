@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Hylasoft.Opc</id>
+    <version>0.0</version> <!-- Not important, gets overridden by the grunt task -->
+    <title>Hylasoft.Opc</title>
+    <description>Opc made simpler</description>
+    <authors>Giacomo Tagliabue</authors>
+    <language>en-US</language>
+    <owners>Hylasoft Usa</owners>
+    <licenseUrl>https://github.com/hylasoft-usa/h-opc/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/hylasoft-usa/h-opc/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>OPC UA Unified Architecture Manufacturing Hyla Hylasoft</tags>
+  </metadata>
+  <files>
+    <file src="h-opc.dll" target="lib"/>
+    <file src="h-opc.xml" target="lib"/>
+  </files>
+</package>

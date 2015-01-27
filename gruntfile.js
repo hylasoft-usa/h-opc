@@ -78,6 +78,30 @@ module.exports = function(grunt) {
         src: '<%= srcPath %><%= solutionName %>',
         dest: 'packages/'
       }
+    },
+
+    nugetpack: {
+      dist: {
+        src: '<%= nuspecFile %>',
+        dest: '.',
+
+        options: {
+          version: '<%= pkg.version %>',
+          basePath: '<%= projectName %>/bin/Release',
+          includeReferencedProjects: true,
+          excludeEmptyDirectories: true,
+          verbose: true
+        }
+      }
+    },
+
+    nugetpush: {
+      src: '*.<%= pkg.version %>.nupkg',
+      options: {}
+    },
+
+    clean: {
+      nuget: ['*.nupkg'],
     }
 
   });
@@ -88,4 +112,5 @@ module.exports = function(grunt) {
   grunt.registerTask('build', ['nugetrestore','msbuild:debug','msbuild:release']);
   grunt.registerTask('test', ['nugetrestore','msbuild:debug', 'mstest']);
   grunt.registerTask('release', ['assemblyinfo', 'test']);
+  grunt.registerTask('publishNuget', ['release', 'msbuild:release', 'nugetpack', 'nugetpush', 'clean:nuget']);
 };
