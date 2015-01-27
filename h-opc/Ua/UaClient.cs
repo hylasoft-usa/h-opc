@@ -110,7 +110,14 @@ namespace Hylasoft.Opc.Ua
       {
         var p = (MonitoredItemNotification)args.NotificationValue;
         var t = p.Value.WrappedValue.Value;
-        callback((T)t, () => _session.RemoveSubscription(sub));
+        Action unsubscribe = () =>
+        {
+          sub.RemoveItems(sub.MonitoredItems);
+          sub.Delete(true);
+          _session.RemoveSubscription(sub);
+          sub.Dispose();
+        };
+        callback((T)t, unsubscribe);
       };
     }
 
