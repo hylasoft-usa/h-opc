@@ -8,6 +8,9 @@ using Opc.Ua.Configuration;
 
 namespace Hylasoft.Opc.Ua
 {
+  /// <summary>
+  /// Client Implementation for UA
+  /// </summary>
   public class UaClient : IClient<UaNode>
   {
     private readonly Uri _serverUrl;
@@ -32,6 +35,9 @@ namespace Hylasoft.Opc.Ua
 
     #region interface methods
 
+    /// <summary>
+    /// Connect the client to the OPC Server
+    /// </summary>
     public void Connect()
     {
       if (Status == OpcStatus.Connected)
@@ -43,8 +49,18 @@ namespace Hylasoft.Opc.Ua
       Status = OpcStatus.Connected;
     }
 
+    /// <summary>
+    /// Gets the current status of the OPC Client
+    /// </summary>
     public OpcStatus Status { get; private set; }
 
+    /// <summary>
+    /// Read a tag
+    /// </summary>
+    /// <typeparam name="T">The type of tag to read</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
+    /// <returns>The value retrieved from the OPC</returns>
     public T Read<T>(string tag)
     {
       var n = FindNode(tag, RootNode);
@@ -65,6 +81,13 @@ namespace Hylasoft.Opc.Ua
       return (T)val.Value;
     }
 
+    /// <summary>
+    /// Write a value on the specified opc tag
+    /// </summary>
+    /// <typeparam name="T">The type of tag to write on</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` writes on the tag `bar` on the folder `foo`</param>
+    /// <param name="item"></param>
     public void Write<T>(string tag, T item)
     {
       var n = FindNode(tag, RootNode);
@@ -82,6 +105,14 @@ namespace Hylasoft.Opc.Ua
       CheckReturnValue(results[0]);
     }
 
+    /// <summary>
+    /// Monitor the specified tag for changes
+    /// </summary>
+    /// <typeparam name="T">the type of tag to monitor</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
+    /// <param name="callback">the callback to execute when the value is changed.
+    /// The first parameter is the new value of the node, the second is an `unsubscribe` function to unsubscribe the callback</param>
     public void Monitor<T>(string tag, Action<T, Action> callback)
     {
       var node = FindNode(tag);
@@ -121,6 +152,12 @@ namespace Hylasoft.Opc.Ua
       };
     }
 
+    /// <summary>
+    /// Explore a folder on the Opc Server
+    /// </summary>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` finds the sub nodes of `bar` on the folder `foo`</param>
+    /// <returns>The list of sub-nodes</returns>
     public IEnumerable<UaNode> ExploreFolder(string tag)
     {
       var folder = FindNode(tag);
@@ -138,6 +175,12 @@ namespace Hylasoft.Opc.Ua
       return nodes;
     }
 
+    /// <summary>
+    /// Finds a node on the Opc Server
+    /// </summary>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` finds the tag `bar` on the folder `foo`</param>
+    /// <returns>If there is a tag, it returns it, otherwise it throws an </returns>
     public UaNode FindNode(string tag)
     {
       // if the tag already exists in cache, return it
@@ -156,8 +199,14 @@ namespace Hylasoft.Opc.Ua
       throw new OpcException(string.Format("The tag \"{0}\" doesn't exist on the Server", tag));
     }
 
+    /// <summary>
+    /// Gets the root node of the server
+    /// </summary>
     public UaNode RootNode { get; private set; }
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
     public void Dispose()
     {
       _session.RemoveSubscriptions(_session.Subscriptions);

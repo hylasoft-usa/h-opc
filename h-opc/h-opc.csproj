@@ -24,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\rules.ruleset</CodeAnalysisRuleSet>
     <StyleCopEnabled>False</StyleCopEnabled>
+    <DocumentationFile>bin\Debug\h-opc.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
     <StyleCopEnabled>True</StyleCopEnabled>
     <StyleCopTreatErrorsAsWarnings>False</StyleCopTreatErrorsAsWarnings>
+    <DocumentationFile>bin\Release\h-opc.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Opc.Ua.Client">

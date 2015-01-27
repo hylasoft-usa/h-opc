@@ -59,6 +59,9 @@ namespace Hylasoft.Opc.Common.Nodes
       }
     }
 
+    /// <summary>
+    /// Overrides ToString()
+    /// </summary>
     public override string ToString()
     {
       return Tag;

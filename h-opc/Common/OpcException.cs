@@ -9,20 +9,32 @@ namespace Hylasoft.Opc.Common
   [Serializable]
   public class OpcException : Exception
   {
+    /// <summary>
+    /// Initialize a new instance of the OpcException class
+    /// </summary>
     public OpcException()
     {
     }
 
+    /// <summary>
+    /// Initialize a new instance of the OpcException class
+    /// </summary>
     public OpcException(string message)
       : base(message)
     {
     }
 
+    /// <summary>
+    /// Initialize a new instance of the OpcException class
+    /// </summary>
     public OpcException(string message, Exception inner)
       : base(message, inner)
     {
     }
 
+    /// <summary>
+    /// Initialize a new instance of the OpcException class
+    /// </summary>
     protected OpcException(SerializationInfo info, StreamingContext context)
       : base(info, context)
     {
