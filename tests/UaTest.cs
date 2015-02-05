@@ -61,6 +61,31 @@ namespace Hylasoft.Opc.Tests
       Expect(val).ToBe(13);
     }
 
+
+    [TestMethod]
+    public void ReadArrayNodeTest()
+    {
+      var val = _client.Read<bool[]>("Data.Static.Array.BooleanValue");
+      Expect(val.Length).ToBeGreaterThan(0);
+    }
+
+    [TestMethod]
+    public void WriteArrayNodeTest()
+    {
+      const string tag = "Data.Static.Array.BooleanValue";
+
+      var val1 = new[] {true, false, false};
+      var val2 = new[] {false, false};
+
+      _client.Write(tag, val1);
+      var val = _client.Read<bool[]>(tag);
+      Expect(val.Zip(val1, (a,b) =>  a == b )).ToNotContain(false);
+
+      _client.Write(tag, val2);
+      val = _client.Read<bool[]>(tag);
+      Expect(val.Zip(val2, (a, b) => a == b)).ToNotContain(false);
+    }
+
     [TestMethod]
     public void FailWriteTest()
     {
