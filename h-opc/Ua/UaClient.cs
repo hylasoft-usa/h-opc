@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Hylasoft.Opc.Common;
+﻿using Hylasoft.Opc.Common;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -80,11 +81,65 @@ namespace Hylasoft.Opc.Ua
             var nodesToRead = new ReadValueIdCollection { readValue };
             DataValueCollection results;
             DiagnosticInfoCollection diag;
-            _session.Read(null, 0, TimestampsToReturn.Neither, nodesToRead, out results, out diag);
+            _session.Read(
+                requestHeader: null, 
+                maxAge: 0, 
+                timestampsToReturn: TimestampsToReturn.Neither, 
+                nodesToRead: nodesToRead, 
+                results: out results, 
+                diagnosticInfos: out diag);
             var val = results[0];
 
             CheckReturnValue(val.StatusCode);
             return (T)val.Value;
+        }
+
+
+        /// <summary>
+        /// Read a tag asynchronously
+        /// </summary>
+        /// <typeparam name="T">The type of tag to read</typeparam>
+        /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+        /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
+        /// <returns>The value retrieved from the OPC</returns>
+        public Task<T> ReadAsync<T>(string tag)
+        {
+            var n = FindNode(tag, RootNode);
+            var readValue = new ReadValueId
+            {
+                NodeId = n.NodeId,
+                AttributeId = AttributeId
+            };
+            var nodesToRead = new ReadValueIdCollection { readValue };
+            DataValueCollection results;
+            DiagnosticInfoCollection diag;
+
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            _session.BeginRead(
+                requestHeader: null, 
+                maxAge: 0, 
+                timestampsToReturn: TimestampsToReturn.Neither, 
+                nodesToRead: nodesToRead, callback: ar => {
+                    var response = _session.EndRead(
+                        result: ar, 
+                        results: out results, 
+                        diagnosticInfos: out diag);
+
+                    try
+                    {
+                        CheckReturnValue(response.ServiceResult);
+                        CheckReturnValue(results[0].StatusCode);
+                        var val = results[0];
+                        taskCompletionSource.TrySetResult((T) val.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        taskCompletionSource.TrySetException(ex);
+                    }
+                }, 
+                asyncState: null);
+
+            return taskCompletionSource.Task;
         }
 
         /// <summary>
@@ -93,7 +148,7 @@ namespace Hylasoft.Opc.Ua
         /// <typeparam name="T">The type of tag to write on</typeparam>
         /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
         /// E.g: the tag `foo.bar` writes on the tag `bar` on the folder `foo`</param>
-        /// <param name="item"></param>
+        /// <param name="item">The value for the item to write</param>
         public void Write<T>(string tag, T item)
         {
             var n = FindNode(tag, RootNode);
@@ -107,8 +162,59 @@ namespace Hylasoft.Opc.Ua
 
             StatusCodeCollection results;
             DiagnosticInfoCollection diag;
-            _session.Write(null, nodesToWrite, out results, out diag);
+            _session.Write(
+                requestHeader: null, 
+                nodesToWrite: nodesToWrite, 
+                results: out results, 
+                diagnosticInfos: out diag);
+
             CheckReturnValue(results[0]);
+        }
+
+
+        /// <summary>
+        /// Write a value on the specified opc tag asynchronously
+        /// </summary>
+        /// <typeparam name="T">The type of tag to write on</typeparam>
+        /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+        /// E.g: the tag `foo.bar` writes on the tag `bar` on the folder `foo`</param>
+        /// <param name="item">The value for the item to write</param>        
+        public Task WriteAsync<T>(string tag, T item)
+        {
+            var n = FindNode(tag, RootNode);
+            var writeValue = new WriteValue
+            {
+                NodeId = n.NodeId,
+                AttributeId = AttributeId,
+                Value = { Value = item }
+            };
+            var nodesToWrite = new WriteValueCollection { writeValue };
+
+            StatusCodeCollection results;
+            DiagnosticInfoCollection diag;
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            _session.BeginWrite(
+                requestHeader: null,
+                nodesToWrite: nodesToWrite,
+                callback: ar => {
+                    var response = _session.EndWrite(
+                        result: ar,
+                        results: out results,
+                        diagnosticInfos: out diag);
+
+                    try
+                    {
+                        CheckReturnValue(response.ServiceResult);
+                        CheckReturnValue(results[0]);
+                    }
+                    catch (Exception ex)
+                    {
+                        taskCompletionSource.TrySetException(ex);
+                    }
+                },
+                asyncState: null);
+
+            return taskCompletionSource.Task;
         }
 
 
