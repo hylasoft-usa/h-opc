@@ -42,7 +42,13 @@ namespace Hylasoft.Opc.Ua
         }
 
 
-        #region interface methods
+        private void PostInitializeSession()
+        {
+            var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
+            RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
+            AddNodeToCache(RootNode);
+            Status = OpcStatus.Connected;            
+        }
 
         /// <summary>
         /// Connect the client to the OPC Server
@@ -52,11 +58,30 @@ namespace Hylasoft.Opc.Ua
             if (Status == OpcStatus.Connected)
                 return;
             _session = InitializeSession(_serverUrl, _options);
-            var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
-            RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
-            AddNodeToCache(RootNode);
-            Status = OpcStatus.Connected;            
+            PostInitializeSession();
         }
+
+        /// <summary>
+        /// Reconnect the OPC session
+        /// </summary>
+        public void ReConnect()
+        {
+            if (Status != OpcStatus.Connected)
+                return;
+            _session.Reconnect();
+        }
+
+        /// <summary>
+        /// Create a new OPC session, based on the current session parameters.
+        /// </summary>
+        public void RecreateSession()
+        {
+            if (Status != OpcStatus.Connected)
+                return;
+            _session = Session.Recreate(_session);
+            PostInitializeSession();
+        }
+
 
         /// <summary>
         /// Gets the current status of the OPC Client
@@ -328,10 +353,6 @@ namespace Hylasoft.Opc.Ua
             GC.SuppressFinalize(this);
         }
 
-        #endregion
-
-        #region private methods
-
         private void CheckReturnValue(StatusCode status)
         {
             if (!StatusCode.IsGood(status))
@@ -385,7 +406,7 @@ namespace Hylasoft.Opc.Ua
                     },
                     ClientConfiguration = new ClientConfiguration
                     {
-                        DefaultSessionTimeout = 60000,
+                        DefaultSessionTimeout = 60000,                        
                         MinSubscriptionLifetime = 10000
                     },
                     DisableHiResClock = true
@@ -435,7 +456,6 @@ namespace Hylasoft.Opc.Ua
               : FindNode(string.Join(".", folders.Except(new[] { head })), found); // find sub nodes
         }
 
-        #endregion
     }
 
 }
