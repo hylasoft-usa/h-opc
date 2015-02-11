@@ -14,14 +14,29 @@ namespace Hylasoft.Opc.Ua
         public string ApplicationName { get; set; }
 
         /// <summary>
-        /// Specifies the ConfigSectionName for the client configuration
+        /// Specifies the ConfigSectionName for the client configuration.
         /// </summary>
         public string ConfigSectionName { get; set; }
 
         /// <summary>
-        /// default monitor interval in Milliseconds
+        /// default monitor interval in Milliseconds.
         /// </summary>
         public int DefaultMonitorInterval { get; set; }
+
+        /// <summary>
+        /// Specifies a name to be associated with the created sessions.
+        /// </summary>
+        public string SessionName { get; set; }
+
+        /// <summary>
+        /// Specifies the timeout for the sessions.
+        /// </summary>
+        public uint SessionTimeout { get; set; }
+
+        /// <summary>
+        /// Specify whether message exchange should be secured.
+        /// </summary>
+        public bool UseMessageSecurity { get; set; }
 
 
         internal UaClientOptions()
@@ -30,6 +45,9 @@ namespace Hylasoft.Opc.Ua
             ApplicationName = "h-opc-client";
             ConfigSectionName = "h-opc-client";
             DefaultMonitorInterval = 100;
+            SessionName = "h-opc-client";
+            SessionTimeout = 60000U;
+            UseMessageSecurity = false;
         }
     }
 }

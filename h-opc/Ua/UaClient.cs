@@ -72,14 +72,12 @@ namespace Hylasoft.Opc.Ua
         public T Read<T>(string tag)
         {
             var n = FindNode(tag, RootNode);
-            var nodesToRead = new ReadValueIdCollection
-      {
-        new ReadValueId
-        {
-          NodeId = n.NodeId,
-          AttributeId = AttributeId
-        }
-      };
+            var readValue = new ReadValueId
+            {
+                NodeId = n.NodeId,
+                AttributeId = AttributeId
+            };
+            var nodesToRead = new ReadValueIdCollection { readValue };
             DataValueCollection results;
             DiagnosticInfoCollection diag;
             _session.Read(null, 0, TimestampsToReturn.Neither, nodesToRead, out results, out diag);
@@ -112,6 +110,7 @@ namespace Hylasoft.Opc.Ua
             _session.Write(null, nodesToWrite, out results, out diag);
             CheckReturnValue(results[0]);
         }
+
 
         /// <summary>
         /// Monitor the specified tag for changes
@@ -227,7 +226,7 @@ namespace Hylasoft.Opc.Ua
 
         #region private methods
 
-        private static void CheckReturnValue(StatusCode status)
+        private void CheckReturnValue(StatusCode status)
         {
             if (!StatusCode.IsGood(status))
                 throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0})", status), status);
@@ -246,7 +245,7 @@ namespace Hylasoft.Opc.Ua
         /// <summary>
         /// Crappy method to initialize the session. I don't know what many of these things do, sincerely.
         /// </summary>
-        private static Session InitializeSession(Uri url, UaClientOptions _options)
+        private Session InitializeSession(Uri url, UaClientOptions _options)
         {
             var l = new CertificateValidator();
             l.CertificateValidation += (sender, eventArgs) =>
@@ -286,11 +285,20 @@ namespace Hylasoft.Opc.Ua
                     DisableHiResClock = true
                 }
             };
-            var endpoints = ClientUtils.SelectEndpoint(url, false);
-            var session = Session.Create(appInstance.ApplicationConfiguration,
-              new ConfiguredEndpoint(null, endpoints,
-                EndpointConfiguration.Create(appInstance.ApplicationConfiguration)), false, false,
-              appInstance.ApplicationConfiguration.ApplicationName, 60000U, null, new string[] { });
+
+            var endpoints = ClientUtils.SelectEndpoint(url, _options.UseMessageSecurity);
+            var session = Session.Create(
+                configuration: appInstance.ApplicationConfiguration,
+                endpoint: new ConfiguredEndpoint(
+                    collection: null,
+                    description: endpoints,
+                    configuration: EndpointConfiguration.Create(applicationConfiguration: appInstance.ApplicationConfiguration)),
+                updateBeforeConnect: false,
+                checkDomain: false,
+                sessionName: _options.SessionName,
+                sessionTimeout: _options.SessionTimeout,
+                identity: null,
+                preferredLocales: new string[] { });
 
             return session;
         }
