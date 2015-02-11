@@ -55,7 +55,7 @@ namespace Hylasoft.Opc.Ua
             var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
             RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
             AddNodeToCache(RootNode);
-            Status = OpcStatus.Connected;
+            Status = OpcStatus.Connected;            
         }
 
         /// <summary>
@@ -111,15 +111,16 @@ namespace Hylasoft.Opc.Ua
                 AttributeId = AttributeId
             };
             var nodesToRead = new ReadValueIdCollection { readValue };
-            DataValueCollection results;
-            DiagnosticInfoCollection diag;
 
             var taskCompletionSource = new TaskCompletionSource<T>();
             _session.BeginRead(
                 requestHeader: null, 
                 maxAge: 0, 
                 timestampsToReturn: TimestampsToReturn.Neither, 
-                nodesToRead: nodesToRead, callback: ar => {
+                nodesToRead: nodesToRead, 
+                callback: ar => {
+                    DataValueCollection results;
+                    DiagnosticInfoCollection diag;
                     var response = _session.EndRead(
                         result: ar, 
                         results: out results, 
@@ -190,18 +191,17 @@ namespace Hylasoft.Opc.Ua
             };
             var nodesToWrite = new WriteValueCollection { writeValue };
 
-            StatusCodeCollection results;
-            DiagnosticInfoCollection diag;
             var taskCompletionSource = new TaskCompletionSource<T>();
             _session.BeginWrite(
                 requestHeader: null,
                 nodesToWrite: nodesToWrite,
                 callback: ar => {
+                    StatusCodeCollection results;
+                    DiagnosticInfoCollection diag;
                     var response = _session.EndWrite(
                         result: ar,
                         results: out results,
                         diagnosticInfos: out diag);
-
                     try
                     {
                         CheckReturnValue(response.ServiceResult);
@@ -391,7 +391,7 @@ namespace Hylasoft.Opc.Ua
                     DisableHiResClock = true
                 }
             };
-
+            
             var endpoints = ClientUtils.SelectEndpoint(url, _options.UseMessageSecurity);
             var session = Session.Create(
                 configuration: appInstance.ApplicationConfiguration,
