@@ -18,10 +18,18 @@ namespace Hylasoft.Opc.Ua
         /// </summary>
         public string ConfigSectionName { get; set; }
 
+        /// <summary>
+        /// default monitor interval in Milliseconds
+        /// </summary>
+        public int DefaultMonitorInterval { get; set; }
+
+
         internal UaClientOptions()
         {
+            // Initialize default values:
             ApplicationName = "h-opc-client";
             ConfigSectionName = "h-opc-client";
+            DefaultMonitorInterval = 100;
         }
     }
 }

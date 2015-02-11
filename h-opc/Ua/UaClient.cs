@@ -18,9 +18,6 @@ namespace Hylasoft.Opc.Ua
         private Session _session;
         private readonly IDictionary<string, UaNode> _nodesCache = new Dictionary<string, UaNode>();
 
-        // default monitor interval in Milliseconds
-        private const int DefaultMonitorInterval = 100;
-
         // TODO undestand if this has to be parametric
         private const uint AttributeId = 13U;
 
@@ -130,7 +127,7 @@ namespace Hylasoft.Opc.Ua
 
             var sub = new Subscription
             {
-                PublishingInterval = DefaultMonitorInterval,
+                PublishingInterval = _options.DefaultMonitorInterval,
                 PublishingEnabled = true,
                 DisplayName = tag,
                 Priority = byte.MaxValue
@@ -141,7 +138,7 @@ namespace Hylasoft.Opc.Ua
                 StartNodeId = node.NodeId,
                 AttributeId = AttributeId,
                 DisplayName = tag,
-                SamplingInterval = DefaultMonitorInterval,
+                SamplingInterval = _options.DefaultMonitorInterval,
             };
             sub.AddItem(item);
             _session.AddSubscription(sub);
@@ -233,7 +230,7 @@ namespace Hylasoft.Opc.Ua
         private static void CheckReturnValue(StatusCode status)
         {
             if (!StatusCode.IsGood(status))
-                throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0})", status));
+                throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0})", status), status);
         }
 
         /// <summary>
