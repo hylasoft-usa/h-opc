@@ -19,9 +19,6 @@ namespace Hylasoft.Opc.Ua
         private Session _session;
         private readonly IDictionary<string, UaNode> _nodesCache = new Dictionary<string, UaNode>();
 
-        // TODO undestand if this has to be parametric
-        private const uint AttributeId = 13U;
-
         /// <summary>
         /// Creates a server object
         /// </summary>
@@ -101,7 +98,7 @@ namespace Hylasoft.Opc.Ua
             var readValue = new ReadValueId
             {
                 NodeId = n.NodeId,
-                AttributeId = AttributeId
+                AttributeId = Attributes.Value
             };
             var nodesToRead = new ReadValueIdCollection { readValue };
             DataValueCollection results;
@@ -133,7 +130,7 @@ namespace Hylasoft.Opc.Ua
             var readValue = new ReadValueId
             {
                 NodeId = n.NodeId,
-                AttributeId = AttributeId
+                AttributeId = Attributes.Value
             };
             var nodesToRead = new ReadValueIdCollection { readValue };
 
@@ -181,7 +178,7 @@ namespace Hylasoft.Opc.Ua
             var writeValue = new WriteValue
             {
                 NodeId = n.NodeId,
-                AttributeId = AttributeId,
+                AttributeId = Attributes.Value,
                 Value = { Value = item }
             };
             var nodesToWrite = new WriteValueCollection { writeValue };
@@ -211,7 +208,7 @@ namespace Hylasoft.Opc.Ua
             var writeValue = new WriteValue
             {
                 NodeId = n.NodeId,
-                AttributeId = AttributeId,
+                AttributeId = Attributes.Value,
                 Value = { Value = item }
             };
             var nodesToWrite = new WriteValueCollection { writeValue };
@@ -266,7 +263,7 @@ namespace Hylasoft.Opc.Ua
             var item = new MonitoredItem
             {
                 StartNodeId = node.NodeId,
-                AttributeId = AttributeId,
+                AttributeId = Attributes.Value,
                 DisplayName = tag,
                 SamplingInterval = _options.DefaultMonitorInterval,
             };
