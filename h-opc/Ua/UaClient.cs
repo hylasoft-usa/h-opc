@@ -65,7 +65,9 @@ namespace Hylasoft.Opc.Ua
         {
             if (Status != OpcStatus.Connected)
                 return;
+            Status = OpcStatus.NotConnected;
             _session.Reconnect();
+            Status = OpcStatus.Connected;
         }
 
         /// <summary>
@@ -75,6 +77,8 @@ namespace Hylasoft.Opc.Ua
         {
             if (Status != OpcStatus.Connected)
                 return;
+
+            Status = OpcStatus.NotConnected;
             _session = Session.Recreate(_session);
             PostInitializeSession();
         }
