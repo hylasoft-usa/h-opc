@@ -53,6 +53,12 @@ namespace Hylasoft.Opc.Ua
             return endpointDescription1;
         }
 
+        /// <summary>
+        /// Browse the specified node
+        /// </summary>
+        /// <param name="session">The OPC session</param>
+        /// <param name="nodeId">The node to browse</param>
+        /// <returns></returns>
         public static ReferenceDescriptionCollection Browse(Session session, NodeId nodeId)
         {
             var desc = new BrowseDescription
@@ -63,7 +69,11 @@ namespace Hylasoft.Opc.Ua
                 NodeClassMask = 0U,
                 ResultMask = 63U,
             };
-            return Browse(session, desc, true);
+
+            return Browse(
+                session: session, 
+                nodeToBrowse: desc, 
+                throwOnError: true);
         }
 
         public static ReferenceDescriptionCollection Browse(Session session, BrowseDescription nodeToBrowse, bool throwOnError)
@@ -85,7 +95,13 @@ namespace Hylasoft.Opc.Ua
                         return descriptionCollection;
                     var continuationPoints = new ByteStringCollection();
                     continuationPoints.Add(results[0].ContinuationPoint);
-                    session.BrowseNext(null, false, continuationPoints, out results, out diagnosticInfos);
+
+                    var response = session.BrowseNext(
+                        requestHeader: null,
+                        releaseContinuationPoints: false, 
+                        continuationPoints: continuationPoints, 
+                        results: out results, 
+                        diagnosticInfos: out diagnosticInfos);
                     ClientBase.ValidateResponse(results, continuationPoints);
                     ClientBase.ValidateDiagnosticInfos(diagnosticInfos, continuationPoints);
                 }
@@ -98,6 +114,7 @@ namespace Hylasoft.Opc.Ua
                 return null;
             }
         }
+
     }
 
 }
