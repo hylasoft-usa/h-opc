@@ -400,6 +400,8 @@ namespace Hylasoft.Opc.Ua
             {
                 if (ServiceResult.IsGood(eventArgs.Error))
                     eventArgs.Accept = true;
+                else if ((eventArgs.Error.StatusCode.Code == StatusCodes.BadCertificateUntrusted) && _options.AutoAcceptUntrustedCertificates)
+                    eventArgs.Accept = true;
                 else
                     throw new OpcException(string.Format("Failed to validate certificate with error code {0}: {1}", eventArgs.Error.Code, eventArgs.Error.AdditionalInfo), eventArgs.Error.StatusCode);
             };
@@ -417,7 +419,7 @@ namespace Hylasoft.Opc.Ua
                     CertificateValidator = certificateValidator,
                     SecurityConfiguration = new SecurityConfiguration
                     {
-                        AutoAcceptUntrustedCertificates = true
+                        AutoAcceptUntrustedCertificates = _options.AutoAcceptUntrustedCertificates
                     },
                     TransportQuotas = new TransportQuotas
                     {

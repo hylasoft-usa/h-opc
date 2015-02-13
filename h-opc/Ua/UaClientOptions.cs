@@ -20,6 +20,11 @@ namespace Hylasoft.Opc.Ua
         public string ApplicationName { get; set; }
 
         /// <summary>
+        /// Should untrusted certificates be silently accepted by the client?
+        /// </summary>
+        public bool AutoAcceptUntrustedCertificates { get; set; }
+
+        /// <summary>
         /// Specifies the ConfigSectionName for the client configuration.
         /// </summary>
         public string ConfigSectionName { get; set; }
@@ -49,6 +54,7 @@ namespace Hylasoft.Opc.Ua
         {
             // Initialize default values:
             ApplicationName = "h-opc-client";
+            AutoAcceptUntrustedCertificates = true;
             ConfigSectionName = "h-opc-client";
             DefaultMonitorInterval = 100;
             SessionName = "h-opc-client";
