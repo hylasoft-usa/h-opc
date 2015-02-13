@@ -44,7 +44,7 @@ namespace Hylasoft.Opc.Ua
             var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
             RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
             AddNodeToCache(RootNode);
-            Status = OpcStatus.Connected;            
+            Status = OpcStatus.Connected;                        
         }
 
         /// <summary>
@@ -55,8 +55,27 @@ namespace Hylasoft.Opc.Ua
             if (Status == OpcStatus.Connected)
                 return;
             _session = InitializeSession(_serverUrl, _options);
+            _session.KeepAlive += Session_KeepAlive;
+            _session.SessionClosing += Session_Closing;
             PostInitializeSession();
         }
+
+
+        private void Session_KeepAlive(Session session, KeepAliveEventArgs e)
+        {
+            if (e.CurrentState != ServerState.Running)
+            {
+                Status = OpcStatus.NotConnected;
+                NotifyServerConnectionLost();
+            }
+        }
+
+        private void Session_Closing(object sender, EventArgs e)
+        {
+            Status = OpcStatus.NotConnected;
+            NotifyServerConnectionLost();
+        }
+
 
         /// <summary>
         /// Reconnect the OPC session
@@ -456,6 +475,18 @@ namespace Hylasoft.Opc.Ua
               ? found // last node, return it
               : FindNode(string.Join(".", folders.Except(new[] { head })), found); // find sub nodes
         }
+
+
+        private void NotifyServerConnectionLost()
+        {
+            if (ServerConnectionLost != null)
+                ServerConnectionLost(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// This event is raised when the connection to the OPC server is lost.
+        /// </summary>
+        public event EventHandler ServerConnectionLost;
 
     }
 
