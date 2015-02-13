@@ -394,11 +394,16 @@ namespace Hylasoft.Opc.Ua
         /// </summary>
         private Session InitializeSession(Uri url, UaClientOptions _options)
         {
-            var l = new CertificateValidator();
-            l.CertificateValidation += (sender, eventArgs) =>
+            var certificateValidator = new CertificateValidator();
+            certificateValidator.CertificateValidation += (sender, eventArgs) =>
             {
-                eventArgs.Accept = true;
+                if (ServiceResult.IsGood(eventArgs.Error))
+                    eventArgs.Accept = true;
+                else
+                    throw new OpcException(string.Format("Failed to validate certificate with error code {0}: {1}", eventArgs.Error.Code, eventArgs.Error.AdditionalInfo), eventArgs.Error.StatusCode);
             };
+
+            // Build the application configuration
             var appInstance = new ApplicationInstance
             {
                 ApplicationType = ApplicationType.Client,
@@ -408,7 +413,7 @@ namespace Hylasoft.Opc.Ua
                     ApplicationUri = url.ToString(),
                     ApplicationName = _options.ApplicationName,
                     ApplicationType = ApplicationType.Client,
-                    CertificateValidator = l,
+                    CertificateValidator = certificateValidator,
                     SecurityConfiguration = new SecurityConfiguration
                     {
                         AutoAcceptUntrustedCertificates = true
@@ -432,8 +437,15 @@ namespace Hylasoft.Opc.Ua
                     DisableHiResClock = true
                 }
             };
+
+            // Assign a application certificate (when specified)
+            if (_options.ApplicationCertificate != null)
+                appInstance.ApplicationConfiguration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(_options.ApplicationCertificate);
             
+            // Find the endpoint to be used
             var endpoints = ClientUtils.SelectEndpoint(url, _options.UseMessageSecurity);
+
+            // Create the OPC session:
             var session = Session.Create(
                 configuration: appInstance.ApplicationConfiguration,
                 endpoint: new ConfiguredEndpoint(

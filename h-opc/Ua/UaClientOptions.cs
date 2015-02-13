@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -8,6 +9,11 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public class UaClientOptions
     {
+        /// <summary>
+        /// Specifies the (optional) certificate for the applicaiton to connect to the server
+        /// </summary>
+        public X509Certificate2 ApplicationCertificate { get; set; }
+
         /// <summary>
         /// Specifies the ApplicationName for the client application. 
         /// </summary>
