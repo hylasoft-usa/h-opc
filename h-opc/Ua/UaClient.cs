@@ -108,6 +108,18 @@ namespace Hylasoft.Opc.Ua
         /// </summary>
         public OpcStatus Status { get; private set; }
 
+
+        private ReadValueIdCollection BuildReadValueIdCollection(string tag, uint attributeId)
+        {
+            var n = FindNode(tag, RootNode);
+            var readValue = new ReadValueId
+            {
+                NodeId = n.NodeId,
+                AttributeId = attributeId
+            };
+            return new ReadValueIdCollection { readValue };
+        }
+
         /// <summary>
         /// Read a tag
         /// </summary>
@@ -117,13 +129,7 @@ namespace Hylasoft.Opc.Ua
         /// <returns>The value retrieved from the OPC</returns>
         public T Read<T>(string tag)
         {
-            var n = FindNode(tag, RootNode);
-            var readValue = new ReadValueId
-            {
-                NodeId = n.NodeId,
-                AttributeId = Attributes.Value
-            };
-            var nodesToRead = new ReadValueIdCollection { readValue };
+            var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
             DataValueCollection results;
             DiagnosticInfoCollection diag;
             _session.Read(
@@ -149,14 +155,9 @@ namespace Hylasoft.Opc.Ua
         /// <returns>The value retrieved from the OPC</returns>
         public Task<T> ReadAsync<T>(string tag)
         {
-            var n = FindNode(tag, RootNode);
-            var readValue = new ReadValueId
-            {
-                NodeId = n.NodeId,
-                AttributeId = Attributes.Value
-            };
-            var nodesToRead = new ReadValueIdCollection { readValue };
+            var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
 
+            // Wrap the ReadAsync logic in a TaskCompletionSource, so we can use C# async/await syntax to call it:
             var taskCompletionSource = new TaskCompletionSource<T>();
             _session.BeginRead(
                 requestHeader: null, 
@@ -188,6 +189,19 @@ namespace Hylasoft.Opc.Ua
             return taskCompletionSource.Task;
         }
 
+
+        private WriteValueCollection BuildWriteValueCollection(string tag, uint attributeId, object dataValue)
+        {
+            var n = FindNode(tag, RootNode);
+            var writeValue = new WriteValue
+            {
+                NodeId = n.NodeId,
+                AttributeId = attributeId,
+                Value = { Value = dataValue }
+            };
+            return new WriteValueCollection { writeValue };
+        }
+
         /// <summary>
         /// Write a value on the specified opc tag
         /// </summary>
@@ -197,14 +211,7 @@ namespace Hylasoft.Opc.Ua
         /// <param name="item">The value for the item to write</param>
         public void Write<T>(string tag, T item)
         {
-            var n = FindNode(tag, RootNode);
-            var writeValue = new WriteValue
-            {
-                NodeId = n.NodeId,
-                AttributeId = Attributes.Value,
-                Value = { Value = item }
-            };
-            var nodesToWrite = new WriteValueCollection { writeValue };
+            var nodesToWrite = BuildWriteValueCollection(tag, Attributes.Value, item);
 
             StatusCodeCollection results;
             DiagnosticInfoCollection diag;
@@ -227,15 +234,9 @@ namespace Hylasoft.Opc.Ua
         /// <param name="item">The value for the item to write</param>        
         public Task WriteAsync<T>(string tag, T item)
         {
-            var n = FindNode(tag, RootNode);
-            var writeValue = new WriteValue
-            {
-                NodeId = n.NodeId,
-                AttributeId = Attributes.Value,
-                Value = { Value = item }
-            };
-            var nodesToWrite = new WriteValueCollection { writeValue };
+            var nodesToWrite = BuildWriteValueCollection(tag, Attributes.Value, item);
 
+            // Wrap the WriteAsync logic in a TaskCompletionSource, so we can use C# async/await syntax to call it:
             var taskCompletionSource = new TaskCompletionSource<T>();
             _session.BeginWrite(
                 requestHeader: null,
