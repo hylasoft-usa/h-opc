@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Hylasoft.Opc.Tests</RootNamespace>
     <AssemblyName>tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -18,6 +18,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <StyleCopOverrideSettingsFile>Settings.StyleCop</StyleCopOverrideSettingsFile>
     <BuildToolsStyleCopVersion>4.7.44.0</BuildToolsStyleCopVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,16 +66,16 @@
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>
+  <ItemGroup Label="StyleCopAdditionalAddinPaths">
+    <StyleCopAdditionalAddinPaths Include="..\packages\BuildTools.StyleCopPlus.4.7.49.4\tools">
+      <Visible>false</Visible>
+    </StyleCopAdditionalAddinPaths>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\h-opc\h-opc.csproj">
       <Project>{4f43b6f0-0c32-4c34-978e-9b8b5b0b6e80}</Project>
       <Name>h-opc</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup Label="StyleCopAdditionalAddinPaths">
-    <StyleCopAdditionalAddinPaths Include="..\packages\BuildTools.StyleCopPlus.4.7.49.4\tools">
-      <Visible>false</Visible>
-    </StyleCopAdditionalAddinPaths>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
