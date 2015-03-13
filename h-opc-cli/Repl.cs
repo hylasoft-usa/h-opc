@@ -79,7 +79,7 @@ namespace Hylasoft.Opc.Cli
           throw new BadCommandException();
       }
     }
-    
+
     #region commands
     private void Cd(IList<string> args)
     {

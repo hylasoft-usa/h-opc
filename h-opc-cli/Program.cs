@@ -8,9 +8,9 @@ using Hylasoft.Opc.Ua;
 
 namespace Hylasoft.Opc.Cli
 {
-  class Program
+  public static class Program
   {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
       try
       {
@@ -74,7 +74,7 @@ namespace Hylasoft.Opc.Cli
 
     private static string GetSupportedTypes()
     {
-      return string.Join(", ",Enum.GetNames(typeof(SupportedTypes)));
+      return string.Join(", ", Enum.GetNames(typeof(SupportedTypes)));
     }
 
     private static IClient<Node> GetClient(string url, SupportedTypes type)
@@ -83,11 +83,10 @@ namespace Hylasoft.Opc.Cli
       {
         case SupportedTypes.Ua:
           return new UaClient(new Uri(url));
-          break;
         default:
           throw new ArgumentOutOfRangeException("type");
       }
-    } 
+    }
   }
 
   public enum SupportedTypes
