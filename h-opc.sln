@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h-opc", "h-opc\h-opc.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{53952D19-EEFC-499E-B92F-D3689AEAD82D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h-opc-cli", "h-opc-cli\h-opc-cli.csproj", "{AC7F07EB-0762-4976-B833-C405780B094B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{53952D19-EEFC-499E-B92F-D3689AEAD82D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53952D19-EEFC-499E-B92F-D3689AEAD82D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53952D19-EEFC-499E-B92F-D3689AEAD82D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC7F07EB-0762-4976-B833-C405780B094B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC7F07EB-0762-4976-B833-C405780B094B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC7F07EB-0762-4976-B833-C405780B094B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC7F07EB-0762-4976-B833-C405780B094B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
