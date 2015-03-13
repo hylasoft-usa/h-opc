@@ -1,13 +1,15 @@
 h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip/branch/master?svg=true)](https://ci.appveyor.com/project/hylasoft/h-opc/branch/master)
 ==============
 
-An Opc Library to perform high level operations. Currently supports synchronous operation over the UA protocol
+An Opc Library and a command line to perform OPC operations with ease. Currently supports synchronous operation over the UA protocol
 
-## Nuget
+## Use
 
-A [nuget package](https://www.nuget.org/packages/Hylasoft.Opc/) is available. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
+A [nuget package](https://www.nuget.org/packages/Hylasoft.Opc/) is available for the library. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
 
     PM> Install-Package Hylasoft.Opc
+    
+To install the command line interface, head to the [`release section`](https://github.com/hylasoft-usa/h-opc/releases).
 
 ## Usage
 
@@ -72,12 +74,22 @@ client.Monitor<string>("path.to.string", (newValue, unsubscribe) =>
 
 ````
 
-The second is an `Action<T, Action>` that has two parameter:
+The second parameter is an `Action<T, Action>` that has two parameter:
 
 - `newValue` is the new value of the tag
 - `unsubscribe` is a function that unsubscribes the current monitored item. It's very handy when you want to terminate your callback
 
 it's **important** that you either enclose the client into a `using` statement or call `Dispose()` when you are finished, to unsubscribe all the monitored items and terminate the connection!
+
+## Command line
+
+You can also use the command line interface project to quickly test your an OPC. Build the `h-opc-cli` project or download it from the `release` page of this repository, then run
+
+````
+h-opc-cli.exe OpcType opc.tcp://host-url
+````
+
+Where `OpcType` is the type of opc to use (e.g: UA). Once the project is running, you can use the internal command to manipulate the variable. To have more information aboute the internal commands, type `help` or `?`
 
 ## Build + Contribute
 
