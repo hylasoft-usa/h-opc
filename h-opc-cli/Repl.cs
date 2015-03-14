@@ -148,7 +148,7 @@ namespace Hylasoft.Opc.Cli
     {
       try
       {
-        var cmd = line.Split(' ');
+        var cmd = CliUtils.SplitArguments(line);
         var args = cmd.Skip(1).ToList();
         SupportedCommands selectedCommand;
         if (!Enum.TryParse(cmd[0], true, out selectedCommand))
