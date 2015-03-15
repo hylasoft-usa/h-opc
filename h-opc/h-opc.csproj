@@ -60,6 +60,8 @@
     <Compile Include="Common\IClient.cs" />
     <Compile Include="Common\OpcException.cs" />
     <Compile Include="Common\OpcStatus.cs" />
+    <Compile Include="Da\DaClient.cs" />
+    <Compile Include="Da\DaNode.cs" />
     <Compile Include="Ua\ClientUtils.cs" />
     <Compile Include="Ua\NodeExtensions.cs" />
     <Compile Include="Ua\UaNode.cs" />
