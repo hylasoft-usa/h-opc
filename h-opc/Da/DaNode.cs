@@ -1,4 +1,5 @@
-﻿using Hylasoft.Opc.Common;
+﻿using System;
+using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Common.Nodes;
 
 namespace Hylasoft.Opc.Da
@@ -13,10 +14,12 @@ namespace Hylasoft.Opc.Da
     /// </summary>
     /// <param name="client">the client the node belongs to</param>
     /// <param name="name">the name of the node</param>
+    /// <param name="tag"></param>
     /// <param name="parent">The parent node</param>
-    protected DaNode(IClient<Node> client, string name, Node parent = null)
+    public DaNode(IClient<Node> client, string name, string tag, Node parent = null)
       : base(client, name, parent)
     {
+      Tag = tag;
     }
   }
 }

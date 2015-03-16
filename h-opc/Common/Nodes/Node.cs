@@ -17,12 +17,12 @@ namespace Hylasoft.Opc.Common.Nodes
     /// <summary>
     /// Gets the displayed name of the node
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; protected set; }
 
     /// <summary>
     /// Gets the dot-separated fully qualified tag of the node
     /// </summary>
-    public string Tag { get; private set; }
+    public string Tag { get; protected set; }
 
     /// <summary>
     /// Gets the parent node. If the node is root, returns null

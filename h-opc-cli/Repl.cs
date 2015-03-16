@@ -163,9 +163,9 @@ namespace Hylasoft.Opc.Cli
 
     private string GenerateRelativeTag(string relativeTag)
     {
-      if (string.IsNullOrEmpty(_currentNode.Tag))
-        return relativeTag;
-      return _currentNode.Tag + '.' + relativeTag;
+      var node = _currentNode.SubNodes
+        .SingleOrDefault(n => n.Name == relativeTag);
+      return node == null ? relativeTag : node.Tag;
     }
   }
 }
