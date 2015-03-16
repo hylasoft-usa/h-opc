@@ -38,12 +38,6 @@ namespace Hylasoft.Opc.Da
 
     #region interface methods
 
-    public void Dispose()
-    {
-      _server.Disconnect();
-      _server.Dispose();
-    }
-
     /// <summary>
     /// Connect the client to the OPC Server
     /// </summary>
@@ -57,6 +51,9 @@ namespace Hylasoft.Opc.Da
       AddNodeToCache(RootNode);
     }
 
+    /// <summary>
+    /// Gets the current status of the OPC Client
+    /// </summary>
     public OpcStatus Status
     {
       get
@@ -67,6 +64,13 @@ namespace Hylasoft.Opc.Da
       }
     }
 
+    /// <summary>
+    /// Read a tag
+    /// </summary>
+    /// <typeparam name="T">The type of tag to read</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
+    /// <returns>The value retrieved from the OPC</returns>
     public T Read<T>(string tag)
     {
       var item = new OpcDa.Item { ItemName = tag };
@@ -77,6 +81,13 @@ namespace Hylasoft.Opc.Da
       return (T)result.Value;
     }
 
+    /// <summary>
+    /// Write a value on the specified opc tag
+    /// </summary>
+    /// <typeparam name="T">The type of tag to write on</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` writes on the tag `bar` on the folder `foo`</param>
+    /// <param name="item"></param>
     public void Write<T>(string tag, T item)
     {
       var itmVal = new OpcDa.ItemValue
@@ -88,6 +99,14 @@ namespace Hylasoft.Opc.Da
       CheckResult(result);
     }
 
+    /// <summary>
+    /// Monitor the specified tag for changes
+    /// </summary>
+    /// <typeparam name="T">the type of tag to monitor</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
+    /// <param name="callback">the callback to execute when the value is changed.
+    /// The first parameter is the new value of the node, the second is an `unsubscribe` function to unsubscribe the callback</param>
     public void Monitor<T>(string tag, Action<T, Action> callback)
     {
       var subItem = new OpcDa.SubscriptionState
@@ -97,18 +116,24 @@ namespace Hylasoft.Opc.Da
         UpdateRate = DefaultMonitorInterval
       };
       var sub = _server.CreateSubscription(subItem);
-      
+
       // I have to start a new thread here because unsubscribing
       // the subscription during a datachanged event causes a deadlock
       Action unsubscribe = () => new Thread(o =>
         _server.CancelSubscription(sub)).Start();
-      
+
       sub.DataChanged += (handle, requestHandle, values) =>
         callback((T)values[0].Value, unsubscribe);
-      sub.AddItems(new[] {new OpcDa.Item {ItemName = tag}});
+      sub.AddItems(new[] { new OpcDa.Item { ItemName = tag } });
       sub.SetEnabled(true);
     }
 
+    /// <summary>
+    /// Finds a node on the Opc Server
+    /// </summary>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` finds the tag `bar` on the folder `foo`</param>
+    /// <returns>If there is a tag, it returns it, otherwise it throws an </returns>
     public DaNode FindNode(string tag)
     {
       // if the tag already exists in cache, return it
@@ -124,8 +149,17 @@ namespace Hylasoft.Opc.Da
       return node;
     }
 
+    /// <summary>
+    /// Gets the root node of the server
+    /// </summary>
     public DaNode RootNode { get; private set; }
 
+    /// <summary>
+    /// Explore a folder on the Opc Server
+    /// </summary>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` finds the sub nodes of `bar` on the folder `foo`</param>
+    /// <returns>The list of sub-nodes</returns>
     public IEnumerable<DaNode> ExploreFolder(string tag)
     {
       var parent = FindNode(tag);
@@ -140,6 +174,16 @@ namespace Hylasoft.Opc.Da
       return nodes;
     }
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    public void Dispose()
+    {
+      _server.Disconnect();
+      _server.Dispose();
+      GC.SuppressFinalize(this);
+    }
+
     #endregion
 
     /// <summary>
@@ -152,7 +196,7 @@ namespace Hylasoft.Opc.Da
         _nodesCache.Add(node.Tag, node);
     }
 
-    private void CheckResult(IResult result)
+    private static void CheckResult(IResult result)
     {
       if (result == null)
         throw new OpcException("The server replied with an empty response");

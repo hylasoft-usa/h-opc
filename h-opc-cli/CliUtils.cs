@@ -13,7 +13,7 @@ namespace Hylasoft.Opc.Cli
     public static IList<string> SplitArguments(string input)
     {
       return Regex.Split(input, @"(?:([^\s""]+)|""([^""]*)"")+")
-        .Where(s => s != "" && s != " ")
+        .Where(s => s.All(c => c == ' '))
         .ToList();
     }
   }
