@@ -1,10 +1,11 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("h-opc")]
+[assembly: AssemblyTitle("h-opc-cli")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("hylasoft")]
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("cec4db47-9316-4591-a7e7-35118fb1e375")]
+[assembly: Guid("ccc69915-70a4-4115-b561-a9b4c274b98d")]
 
 // Version information for an assembly consists of the following four values:
 //

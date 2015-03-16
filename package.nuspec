@@ -15,6 +15,9 @@
   </metadata>
   <files>
     <file src="h-opc.dll" target="lib"/>
+    <file src="Opc.Ua.Client.dll" target="lib"/>
+    <file src="Opc.Ua.Configuration.dll" target="lib"/>
+    <file src="Opc.Ua.Core.dll" target="lib"/>
     <file src="h-opc.xml" target="lib"/>
   </files>
 </package>
