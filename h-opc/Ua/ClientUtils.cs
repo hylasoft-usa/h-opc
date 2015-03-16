@@ -10,7 +10,7 @@ namespace Hylasoft.Opc.Ua
   /// </summary>
   internal static class ClientUtils
   {
-    // TODO I didn't write these method. I should rewrite it once I understand whtat it does, beacuse it looks crazy
+    // TODO I didn't write these methods. I should rewrite it once I understand whtat it does, beacuse it looks crazy
 
     public static EndpointDescription SelectEndpoint(Uri discoveryUrl, bool useSecurity)
     {
