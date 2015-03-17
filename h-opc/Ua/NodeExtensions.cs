@@ -15,7 +15,7 @@ namespace Hylasoft.Opc.Ua
     /// <param name="client">the client the node belongs to</param>
     /// <param name="parent">the parent node (optional)</param>
     /// <returns></returns>
-    public static UaNode ToHylaNode(this OpcF.ReferenceDescription node, UaClient client, Node parent = null)
+    internal static UaNode ToHylaNode(this OpcF.ReferenceDescription node, UaClient client, Node parent = null)
     {
       var name = node.DisplayName.ToString();
       var nodeId = node.NodeId.ToString();

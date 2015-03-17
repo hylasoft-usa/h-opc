@@ -47,6 +47,15 @@
     <Reference Include="Opc.Ua.Core">
       <HintPath>..\ext_packages\Opc.Ua.Core.dll</HintPath>
     </Reference>
+    <Reference Include="OpcComRcw">
+      <HintPath>..\ext_packages\OpcComRcw.dll</HintPath>
+    </Reference>
+    <Reference Include="OpcNetApi">
+      <HintPath>..\ext_packages\OpcNetApi.dll</HintPath>
+    </Reference>
+    <Reference Include="OpcNetApi.Com">
+      <HintPath>..\ext_packages\OpcNetApi.Com.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +69,8 @@
     <Compile Include="Common\IClient.cs" />
     <Compile Include="Common\OpcException.cs" />
     <Compile Include="Common\OpcStatus.cs" />
+    <Compile Include="Da\DaClient.cs" />
+    <Compile Include="Da\DaNode.cs" />
     <Compile Include="Ua\ClientUtils.cs" />
     <Compile Include="Ua\NodeExtensions.cs" />
     <Compile Include="Ua\UaNode.cs" />
