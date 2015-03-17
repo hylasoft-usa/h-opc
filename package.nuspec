@@ -19,5 +19,8 @@
     <file src="Opc.Ua.Configuration.dll" target="lib"/>
     <file src="Opc.Ua.Core.dll" target="lib"/>
     <file src="h-opc.xml" target="lib"/>
+    <file src="OpcComRcw.dll" target="lib"/>
+    <file src="OpcNetApi.Com.dll" target="lib"/>
+    <file src="OpcNetApi.dll" target="lib"/>
   </files>
 </package>
