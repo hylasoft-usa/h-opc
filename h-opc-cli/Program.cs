@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Common.Nodes;
+using Hylasoft.Opc.Da;
 using Hylasoft.Opc.Ua;
 
 namespace Hylasoft.Opc.Cli
@@ -65,11 +66,10 @@ namespace Hylasoft.Opc.Cli
 
     private static SupportedTypes GetOpcType(string s)
     {
-      switch (s.ToUpper())
-      {
-        case "UA": return SupportedTypes.Ua;
-        default: throw new ArgumentException("Type not supported");
-      }
+      SupportedTypes result;
+      if (!Enum.TryParse(s, true, out result))
+        throw new ArgumentException("Type not supported");
+      return result;
     }
 
     private static string GetSupportedTypes()
@@ -83,6 +83,8 @@ namespace Hylasoft.Opc.Cli
       {
         case SupportedTypes.Ua:
           return new UaClient(new Uri(url));
+        case SupportedTypes.Da:
+          return new DaClient(new Uri(url));
         default:
           throw new ArgumentOutOfRangeException("type");
       }
@@ -91,6 +93,7 @@ namespace Hylasoft.Opc.Cli
 
   public enum SupportedTypes
   {
-    Ua
+    Ua,
+    Da
   }
 }

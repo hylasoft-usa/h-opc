@@ -478,7 +478,7 @@ namespace Hylasoft.Opc.Ua
             UaNode found;
             try
             {
-                var subNodes = ExploreFolder(node.Tag);
+                var subNodes = node.SubNodes.Cast<UaNode>();
                 found = subNodes.Single(n => n.Name == head);
             }
             catch (Exception ex)
