@@ -8,7 +8,7 @@ An Opc Library and a command line to perform OPC operations with ease. Currently
 A [nuget package](https://www.nuget.org/packages/Hylasoft.Opc/) is available for the library. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
 
     PM> Install-Package Hylasoft.Opc
-    
+
 To install the command line interface, head to the [`release section`](https://github.com/hylasoft-usa/h-opc/releases).
 
 ## Usage
@@ -108,5 +108,4 @@ You must agree to the terms and condition exposed on the OPC Foundation website.
 
 ## Roadmap
 
-- [ ] Add DA integration
 - [ ] Add promise-based asynchronous calls
