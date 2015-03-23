@@ -1,7 +1,7 @@
 h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip/branch/master?svg=true)](https://ci.appveyor.com/project/hylasoft/h-opc/branch/master)
 ==============
 
-An Opc Library and a command line to perform OPC operations with ease. Currently supports synchronous operation over the UA protocol
+An Opc Library and a command line to perform OPC operations with ease and transparency among different protocols. Currently supports synchronous operation over UA and DA protocols.
 
 ## Use
 
@@ -17,6 +17,15 @@ to use the UA Client simply...
 
 ````cs
 using (var client = new UaClient(new Uri("opc.tcp://host-url")))
+{
+  // Use `client` here
+}
+````
+
+and to use the DA Client instead:
+
+````cs
+using (var client = new DaClient(new Uri("opcda://host-url")))
 {
   // Use `client` here
 }
@@ -83,18 +92,17 @@ it's **important** that you either enclose the client into a `using` statement o
 
 ## Command line
 
-You can also use the command line interface project to quickly test your an OPC. Build the `h-opc-cli` project or download it from the `release` page of this repository, then run
+You can also use the command line interface project to quickly test your an OPC. Build the `h-opc-cli` project or download it from the `release` page of this repository, then run:
 
 ````
-h-opc-cli.exe OpcType opc.tcp://host-url
+h-opc-cli.exe [OpcType] [server-url]
 ````
 
-Where `OpcType` is the type of opc to use (e.g: UA). Once the project is running, you can use the internal command to manipulate the variable. To have more information aboute the internal commands, type `help` or `?`
+Where `OpcType` is the type of opc to use (e.g: "UA", "DA"). Once the project is running, you can use the internal command to manipulate the variable. To have more information aboute the internal commands, type `help` or `?`
 
 ## Build + Contribute
 
 The repository uses [cs-boilerplate](https://github.com/hylasoft-usa/cs-boilerplate). Read the readme of the cs-boilerplate repository to understand how to build, run tasks and commit your work to `master`.
-
 
 ## Disclaimer
 
@@ -103,6 +111,9 @@ The following binaries belong to the [OPC Foundation](https://opcfoundation.org/
 - `OPC.Ua.Client.dll`
 - `OPC.Ua.Core.dll`
 - `OPC.Ua.Configuration.dll`
+- `OpcComRcw.dll`
+- `OpcNetApi.Com.dll`
+- `OpcNetApi.dll`
 
 You must agree to the terms and condition exposed on the OPC Foundation website. Hyla Soft is not responsible of their usage and cannot be held responsible.
 
