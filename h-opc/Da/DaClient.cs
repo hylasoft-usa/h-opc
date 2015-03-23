@@ -76,7 +76,7 @@ namespace Hylasoft.Opc.Da
       var item = new OpcDa.Item { ItemName = tag };
       var result = _server.Read(new[] { item })[0];
 
-      CheckResult(result);
+      CheckResult(result, tag);
 
       return (T)result.Value;
     }
@@ -96,7 +96,7 @@ namespace Hylasoft.Opc.Da
         Value = item
       };
       var result = _server.Write(new[] { itmVal })[0];
-      CheckResult(result);
+      CheckResult(result, tag);
     }
 
     /// <summary>
@@ -143,7 +143,7 @@ namespace Hylasoft.Opc.Da
       // try to find the tag otherwise
       var item = new OpcDa.Item { ItemName = tag };
       var result = _server.Read(new[] { item })[0];
-      CheckResult(result);
+      CheckResult(result, tag);
       var node = new DaNode(this, item.ItemName, item.ItemName, RootNode);
       AddNodeToCache(node);
       return node;
@@ -179,7 +179,6 @@ namespace Hylasoft.Opc.Da
     /// </summary>
     public void Dispose()
     {
-      _server.Disconnect();
       _server.Dispose();
       GC.SuppressFinalize(this);
     }
@@ -196,12 +195,12 @@ namespace Hylasoft.Opc.Da
         _nodesCache.Add(node.Tag, node);
     }
 
-    private static void CheckResult(IResult result)
+    private static void CheckResult(IResult result, string tag)
     {
       if (result == null)
         throw new OpcException("The server replied with an empty response");
       if (result.ResultID.ToString() != "S_OK")
-        throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0})", result.ResultID));
+        throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0}, Opc Tag: {1})", result.ResultID, tag));
     }
   }
 }
