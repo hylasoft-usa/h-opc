@@ -1,4 +1,4 @@
-using Hylasoft.Opc.Common.Nodes;
+using Hylasoft.Opc.Common;
 using OpcF = Opc.Ua;
 
 namespace Hylasoft.Opc.Ua

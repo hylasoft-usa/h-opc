@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hylasoft.Opc.Common;
-using Hylasoft.Opc.Common.Nodes;
 
 namespace Hylasoft.Opc.Cli
 {

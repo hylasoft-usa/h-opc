@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Hylasoft.Opc.Common.Nodes;
 
 namespace Hylasoft.Opc.Common
 {
