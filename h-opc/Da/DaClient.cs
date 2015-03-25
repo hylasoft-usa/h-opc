@@ -179,7 +179,8 @@ namespace Hylasoft.Opc.Da
     /// </summary>
     public void Dispose()
     {
-      _server.Dispose();
+      if (_server != null)
+        _server.Dispose();
       GC.SuppressFinalize(this);
     }
 
