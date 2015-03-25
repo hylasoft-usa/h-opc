@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ClientExtensions.cs" />
     <Compile Include="Common\Node.cs" />
     <Compile Include="Common\IClient.cs" />
     <Compile Include="Common\OpcException.cs" />
