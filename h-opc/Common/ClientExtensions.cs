@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Hylasoft.Opc.Common
+﻿namespace Hylasoft.Opc.Common
 {
   /// <summary>
   /// Useful extension methods for OPC Clients
