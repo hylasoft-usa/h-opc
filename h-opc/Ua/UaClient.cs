@@ -224,14 +224,13 @@ namespace Hylasoft.Opc.Ua
       CheckReturnValue(results[0]);
     }
 
-
     /// <summary>
     /// Write a value on the specified opc tag asynchronously
     /// </summary>
     /// <typeparam name="T">The type of tag to write on</typeparam>
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` writes on the tag `bar` on the folder `foo`</param>
-    /// <param name="item">The value for the item to write</param>        
+    /// <param name="item">The value for the item to write</param>
     public Task WriteAsync<T>(string tag, T item)
     {
       var nodesToWrite = BuildWriteValueCollection(tag, Attributes.Value, item);
