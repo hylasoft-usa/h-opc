@@ -54,14 +54,13 @@ namespace Hylasoft.Opc.Ua
     {
       if (Status == OpcStatus.Connected)
         return;
-      _session = InitializeSession(_serverUrl, _options);
-      _session.KeepAlive += Session_KeepAlive;
-      _session.SessionClosing += Session_Closing;
+      _session = InitializeSession(_serverUrl);
+      _session.KeepAlive += SessionKeepAlive;
+      _session.SessionClosing += SessionClosing;
       PostInitializeSession();
     }
 
-
-    private void Session_KeepAlive(Session session, KeepAliveEventArgs e)
+    private void SessionKeepAlive(Session session, KeepAliveEventArgs e)
     {
       if (e.CurrentState != ServerState.Running)
       {
@@ -70,7 +69,7 @@ namespace Hylasoft.Opc.Ua
       }
     }
 
-    private void Session_Closing(object sender, EventArgs e)
+    private void SessionClosing(object sender, EventArgs e)
     {
       Status = OpcStatus.NotConnected;
       NotifyServerConnectionLost();
@@ -261,7 +260,6 @@ namespace Hylasoft.Opc.Ua
             }
           },
           asyncState: null);
-
       return taskCompletionSource.Task;
     }
 
@@ -398,7 +396,7 @@ namespace Hylasoft.Opc.Ua
     /// <summary>
     /// Crappy method to initialize the session. I don't know what many of these things do, sincerely.
     /// </summary>
-    private Session InitializeSession(Uri url, UaClientOptions _options)
+    private Session InitializeSession(Uri url)
     {
       var certificateValidator = new CertificateValidator();
       certificateValidator.CertificateValidation += (sender, eventArgs) =>
