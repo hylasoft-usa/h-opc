@@ -3,7 +3,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Hylasoft.Opc.Ua
 {
-
   /// <summary>
   /// This class defines the configuration options for the setup of the UA client session
   /// </summary>
@@ -15,7 +14,7 @@ namespace Hylasoft.Opc.Ua
     public X509Certificate2 ApplicationCertificate { get; set; }
 
     /// <summary>
-    /// Specifies the ApplicationName for the client application. 
+    /// Specifies the ApplicationName for the client application.
     /// </summary>
     public string ApplicationName { get; set; }
 
