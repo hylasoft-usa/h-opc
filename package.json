@@ -20,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/coassoftwaresystems/h-opc"
+    "url": "https://github.com/hylasoft-usa/h-opc"
   },
-  "author": "Giacomo Tagliabue, Pieter Polak",
+  "author": "Giacomo Tagliabue",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/coassoftwaresystems/h-opc/issues"
+    "url": "https://github.com/hylasoft-usa/h-opc/issues"
   },
-  "homepage": "https://github.com/coassoftwaresystems/h-opc"
+  "homepage": "https://github.com/hylasoft-usa/h-opc"
 }
