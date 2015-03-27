@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Hylasoft.Opc.Common.Nodes
+namespace Hylasoft.Opc.Common
 {
   /// <summary>
   /// Base class representing a node on the OPC server

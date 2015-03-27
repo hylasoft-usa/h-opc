@@ -1,5 +1,4 @@
 ﻿using Hylasoft.Opc.Common;
-using Hylasoft.Opc.Common.Nodes;
 
 namespace Hylasoft.Opc.Ua
 {

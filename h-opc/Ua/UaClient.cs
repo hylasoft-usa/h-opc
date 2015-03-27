@@ -370,9 +370,12 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public void Dispose()
     {
-      _session.RemoveSubscriptions(_session.Subscriptions);
-      _session.Close();
-      _session.Dispose();
+      if (_session != null)
+      {
+        _session.RemoveSubscriptions(_session.Subscriptions);
+        _session.Close();
+        _session.Dispose();
+      }
       GC.SuppressFinalize(this);
     }
 

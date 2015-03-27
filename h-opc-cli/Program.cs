@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Hylasoft.Opc.Common;
-using Hylasoft.Opc.Common.Nodes;
 using Hylasoft.Opc.Da;
 using Hylasoft.Opc.Ua;
 
