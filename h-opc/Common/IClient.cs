@@ -6,7 +6,8 @@ namespace Hylasoft.Opc.Common
   /// <summary>
   /// Client interface to perform basic Opc tasks, like discovery, monitoring, reading/writing tags,
   /// </summary>
-  public interface IClient<out TNode> : IDisposable where TNode : Node
+  public interface IClient<out TNode> : IDisposable 
+    where TNode : Node
   {
     /// <summary>
     /// Connect the client to the OPC Server
