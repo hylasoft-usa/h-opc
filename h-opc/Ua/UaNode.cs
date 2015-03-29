@@ -24,5 +24,7 @@ namespace Hylasoft.Opc.Ua
     {
       NodeId = nodeId;
     }
+
   }
+
 }

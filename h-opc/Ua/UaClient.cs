@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Hylasoft.Opc.Common;
+﻿using Hylasoft.Opc.Common;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -13,15 +14,10 @@ namespace Hylasoft.Opc.Ua
   /// </summary>
   public class UaClient : IClient<UaNode>
   {
+    private readonly UaClientOptions _options = new UaClientOptions();
     private readonly Uri _serverUrl;
     private Session _session;
     private readonly IDictionary<string, UaNode> _nodesCache = new Dictionary<string, UaNode>();
-
-    // default monitor interval in Milliseconds
-    private const int DefaultMonitorInterval = 100;
-
-    // TODO undestand if this has to be parametric
-    private const uint AttributeId = 13U;
 
     /// <summary>
     /// Creates a server object
@@ -33,7 +29,23 @@ namespace Hylasoft.Opc.Ua
       Status = OpcStatus.NotConnected;
     }
 
-    #region interface methods
+
+    /// <summary>
+    /// Options to configure the UA client session
+    /// </summary>
+    public UaClientOptions Options
+    {
+      get { return _options; }
+    }
+
+
+    private void PostInitializeSession()
+    {
+      var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
+      RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
+      AddNodeToCache(RootNode);
+      Status = OpcStatus.Connected;
+    }
 
     /// <summary>
     /// Connect the client to the OPC Server
@@ -43,16 +55,69 @@ namespace Hylasoft.Opc.Ua
       if (Status == OpcStatus.Connected)
         return;
       _session = InitializeSession(_serverUrl);
-      var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
-      RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
-      AddNodeToCache(RootNode);
+      _session.KeepAlive += SessionKeepAlive;
+      _session.SessionClosing += SessionClosing;
+      PostInitializeSession();
+    }
+
+    private void SessionKeepAlive(Session session, KeepAliveEventArgs e)
+    {
+      if (e.CurrentState != ServerState.Running)
+      {
+        Status = OpcStatus.NotConnected;
+        NotifyServerConnectionLost();
+      }
+    }
+
+    private void SessionClosing(object sender, EventArgs e)
+    {
+      Status = OpcStatus.NotConnected;
+      NotifyServerConnectionLost();
+    }
+
+
+    /// <summary>
+    /// Reconnect the OPC session
+    /// </summary>
+    public void ReConnect()
+    {
+      if (Status != OpcStatus.Connected)
+        return;
+      Status = OpcStatus.NotConnected;
+      _session.Reconnect();
       Status = OpcStatus.Connected;
     }
+
+    /// <summary>
+    /// Create a new OPC session, based on the current session parameters.
+    /// </summary>
+    public void RecreateSession()
+    {
+      if (Status != OpcStatus.Connected)
+        return;
+
+      Status = OpcStatus.NotConnected;
+      _session = Session.Recreate(_session);
+      PostInitializeSession();
+    }
+
 
     /// <summary>
     /// Gets the current status of the OPC Client
     /// </summary>
     public OpcStatus Status { get; private set; }
+
+
+    private ReadValueIdCollection BuildReadValueIdCollection(string tag, uint attributeId)
+    {
+      var n = FindNode(tag, RootNode);
+      var readValue = new ReadValueId
+      {
+        NodeId = n.NodeId,
+        AttributeId = attributeId
+      };
+      return new ReadValueIdCollection { readValue };
+    }
 
     /// <summary>
     /// Read a tag
@@ -63,22 +128,78 @@ namespace Hylasoft.Opc.Ua
     /// <returns>The value retrieved from the OPC</returns>
     public T Read<T>(string tag)
     {
-      var n = FindNode(tag, RootNode);
-      var nodesToRead = new ReadValueIdCollection
-      {
-        new ReadValueId
-        {
-          NodeId = n.NodeId,
-          AttributeId = AttributeId
-        }
-      };
+      var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
       DataValueCollection results;
       DiagnosticInfoCollection diag;
-      _session.Read(null, 0, TimestampsToReturn.Neither, nodesToRead, out results, out diag);
+      _session.Read(
+          requestHeader: null,
+          maxAge: 0,
+          timestampsToReturn: TimestampsToReturn.Neither,
+          nodesToRead: nodesToRead,
+          results: out results,
+          diagnosticInfos: out diag);
       var val = results[0];
 
       CheckReturnValue(val.StatusCode);
       return (T)val.Value;
+    }
+
+
+    /// <summary>
+    /// Read a tag asynchronously
+    /// </summary>
+    /// <typeparam name="T">The type of tag to read</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
+    /// <returns>The value retrieved from the OPC</returns>
+    public Task<T> ReadAsync<T>(string tag)
+    {
+      var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
+
+      // Wrap the ReadAsync logic in a TaskCompletionSource, so we can use C# async/await syntax to call it:
+      var taskCompletionSource = new TaskCompletionSource<T>();
+      _session.BeginRead(
+          requestHeader: null,
+          maxAge: 0,
+          timestampsToReturn: TimestampsToReturn.Neither,
+          nodesToRead: nodesToRead,
+          callback: ar =>
+          {
+            DataValueCollection results;
+            DiagnosticInfoCollection diag;
+            var response = _session.EndRead(
+                result: ar,
+                results: out results,
+                diagnosticInfos: out diag);
+
+            try
+            {
+              CheckReturnValue(response.ServiceResult);
+              CheckReturnValue(results[0].StatusCode);
+              var val = results[0];
+              taskCompletionSource.TrySetResult((T)val.Value);
+            }
+            catch (Exception ex)
+            {
+              taskCompletionSource.TrySetException(ex);
+            }
+          },
+          asyncState: null);
+
+      return taskCompletionSource.Task;
+    }
+
+
+    private WriteValueCollection BuildWriteValueCollection(string tag, uint attributeId, object dataValue)
+    {
+      var n = FindNode(tag, RootNode);
+      var writeValue = new WriteValue
+      {
+        NodeId = n.NodeId,
+        AttributeId = attributeId,
+        Value = { Value = dataValue }
+      };
+      return new WriteValueCollection { writeValue };
     }
 
     /// <summary>
@@ -87,23 +208,60 @@ namespace Hylasoft.Opc.Ua
     /// <typeparam name="T">The type of tag to write on</typeparam>
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` writes on the tag `bar` on the folder `foo`</param>
-    /// <param name="item"></param>
+    /// <param name="item">The value for the item to write</param>
     public void Write<T>(string tag, T item)
     {
-      var n = FindNode(tag, RootNode);
-      var writeValue = new WriteValue
-      {
-        NodeId = n.NodeId,
-        AttributeId = AttributeId,
-        Value = { Value = item }
-      };
-      var nodesToWrite = new WriteValueCollection { writeValue };
+      var nodesToWrite = BuildWriteValueCollection(tag, Attributes.Value, item);
 
       StatusCodeCollection results;
       DiagnosticInfoCollection diag;
-      _session.Write(null, nodesToWrite, out results, out diag);
+      _session.Write(
+          requestHeader: null,
+          nodesToWrite: nodesToWrite,
+          results: out results,
+          diagnosticInfos: out diag);
+
       CheckReturnValue(results[0]);
     }
+
+    /// <summary>
+    /// Write a value on the specified opc tag asynchronously
+    /// </summary>
+    /// <typeparam name="T">The type of tag to write on</typeparam>
+    /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
+    /// E.g: the tag `foo.bar` writes on the tag `bar` on the folder `foo`</param>
+    /// <param name="item">The value for the item to write</param>
+    public Task WriteAsync<T>(string tag, T item)
+    {
+      var nodesToWrite = BuildWriteValueCollection(tag, Attributes.Value, item);
+
+      // Wrap the WriteAsync logic in a TaskCompletionSource, so we can use C# async/await syntax to call it:
+      var taskCompletionSource = new TaskCompletionSource<T>();
+      _session.BeginWrite(
+          requestHeader: null,
+          nodesToWrite: nodesToWrite,
+          callback: ar =>
+          {
+            StatusCodeCollection results;
+            DiagnosticInfoCollection diag;
+            var response = _session.EndWrite(
+                result: ar,
+                results: out results,
+                diagnosticInfos: out diag);
+            try
+            {
+              CheckReturnValue(response.ServiceResult);
+              CheckReturnValue(results[0]);
+            }
+            catch (Exception ex)
+            {
+              taskCompletionSource.TrySetException(ex);
+            }
+          },
+          asyncState: null);
+      return taskCompletionSource.Task;
+    }
+
 
     /// <summary>
     /// Monitor the specified tag for changes
@@ -119,7 +277,7 @@ namespace Hylasoft.Opc.Ua
 
       var sub = new Subscription
       {
-        PublishingInterval = DefaultMonitorInterval,
+        PublishingInterval = _options.DefaultMonitorInterval,
         PublishingEnabled = true,
         DisplayName = tag,
         Priority = byte.MaxValue
@@ -128,9 +286,9 @@ namespace Hylasoft.Opc.Ua
       var item = new MonitoredItem
       {
         StartNodeId = node.NodeId,
-        AttributeId = AttributeId,
+        AttributeId = Attributes.Value,
         DisplayName = tag,
-        SamplingInterval = DefaultMonitorInterval,
+        SamplingInterval = _options.DefaultMonitorInterval,
       };
       sub.AddItem(item);
       _session.AddSubscription(sub);
@@ -218,14 +376,10 @@ namespace Hylasoft.Opc.Ua
       GC.SuppressFinalize(this);
     }
 
-    #endregion
-
-    #region private methods
-
-    private static void CheckReturnValue(StatusCode status)
+    private void CheckReturnValue(StatusCode status)
     {
-      if (status.ToString() != "Good")
-        throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0})", status));
+      if (!StatusCode.IsGood(status))
+        throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0})", status), status);
     }
 
     /// <summary>
@@ -241,26 +395,33 @@ namespace Hylasoft.Opc.Ua
     /// <summary>
     /// Crappy method to initialize the session. I don't know what many of these things do, sincerely.
     /// </summary>
-    private static Session InitializeSession(Uri url)
+    private Session InitializeSession(Uri url)
     {
-      var l = new CertificateValidator();
-      l.CertificateValidation += (sender, eventArgs) =>
+      var certificateValidator = new CertificateValidator();
+      certificateValidator.CertificateValidation += (sender, eventArgs) =>
       {
-        eventArgs.Accept = true;
+        if (ServiceResult.IsGood(eventArgs.Error))
+          eventArgs.Accept = true;
+        else if ((eventArgs.Error.StatusCode.Code == StatusCodes.BadCertificateUntrusted) && _options.AutoAcceptUntrustedCertificates)
+          eventArgs.Accept = true;
+        else
+          throw new OpcException(string.Format("Failed to validate certificate with error code {0}: {1}", eventArgs.Error.Code, eventArgs.Error.AdditionalInfo), eventArgs.Error.StatusCode);
       };
+
+      // Build the application configuration
       var appInstance = new ApplicationInstance
       {
         ApplicationType = ApplicationType.Client,
-        ConfigSectionName = "h-opc-client",
+        ConfigSectionName = _options.ConfigSectionName,
         ApplicationConfiguration = new ApplicationConfiguration
         {
           ApplicationUri = url.ToString(),
-          ApplicationName = "h-opc-client",
+          ApplicationName = _options.ApplicationName,
           ApplicationType = ApplicationType.Client,
-          CertificateValidator = l,
+          CertificateValidator = certificateValidator,
           SecurityConfiguration = new SecurityConfiguration
           {
-            AutoAcceptUntrustedCertificates = true
+            AutoAcceptUntrustedCertificates = _options.AutoAcceptUntrustedCertificates
           },
           TransportQuotas = new TransportQuotas
           {
@@ -281,11 +442,27 @@ namespace Hylasoft.Opc.Ua
           DisableHiResClock = true
         }
       };
-      var endpoints = ClientUtils.SelectEndpoint(url, false);
-      var session = Session.Create(appInstance.ApplicationConfiguration,
-        new ConfiguredEndpoint(null, endpoints,
-          EndpointConfiguration.Create(appInstance.ApplicationConfiguration)), false, false,
-        appInstance.ApplicationConfiguration.ApplicationName, 60000U, null, new string[] { });
+
+      // Assign a application certificate (when specified)
+      if (_options.ApplicationCertificate != null)
+        appInstance.ApplicationConfiguration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(_options.ApplicationCertificate);
+
+      // Find the endpoint to be used
+      var endpoints = ClientUtils.SelectEndpoint(url, _options.UseMessageSecurity);
+
+      // Create the OPC session:
+      var session = Session.Create(
+          configuration: appInstance.ApplicationConfiguration,
+          endpoint: new ConfiguredEndpoint(
+              collection: null,
+              description: endpoints,
+              configuration: EndpointConfiguration.Create(applicationConfiguration: appInstance.ApplicationConfiguration)),
+          updateBeforeConnect: false,
+          checkDomain: false,
+          sessionName: _options.SessionName,
+          sessionTimeout: _options.SessionTimeout,
+          identity: null,
+          preferredLocales: new string[] { });
 
       return session;
     }
@@ -316,6 +493,18 @@ namespace Hylasoft.Opc.Ua
         : FindNode(string.Join(".", folders.Except(new[] { head })), found); // find sub nodes
     }
 
-    #endregion
+
+    private void NotifyServerConnectionLost()
+    {
+      if (ServerConnectionLost != null)
+        ServerConnectionLost(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// This event is raised when the connection to the OPC server is lost.
+    /// </summary>
+    public event EventHandler ServerConnectionLost;
+
   }
+
 }
