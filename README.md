@@ -1,4 +1,4 @@
-h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip/branch/master?svg=true)](https://ci.appveyor.com/project/hylasoft/h-opc/branch/master)
+h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip/branch/master?svg=true)](https://ci.appveyor.com/project/hylasoft/h-opc/branch/master) [![NuGet Status](http://img.shields.io/nuget/v/Hylasoft.Opc.svg)](https://www.nuget.org/packages/Hylasoft.Opc)
 ==============
 
 An Opc Library and a command line to perform OPC operations with ease and transparency among different protocols. Currently supports synchronous operation over UA and DA protocols.
@@ -11,7 +11,7 @@ A [nuget package](https://www.nuget.org/packages/Hylasoft.Opc/) is available for
 
 To install the command line interface, head to the [`release section`](https://github.com/hylasoft-usa/h-opc/releases).
 
-## Usage
+## Documentation
 
 to use the UA Client simply...
 
