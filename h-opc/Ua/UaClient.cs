@@ -64,8 +64,19 @@ namespace Hylasoft.Opc.Ua
     {
       if (e.CurrentState != ServerState.Running)
       {
-        Status = OpcStatus.NotConnected;
-        NotifyServerConnectionLost();
+        if (Status == OpcStatus.Connected)
+        {
+          Status = OpcStatus.NotConnected;
+          NotifyServerConnectionLost();
+        }
+      }
+      else if (e.CurrentState == ServerState.Running)
+      {
+        if (Status == OpcStatus.NotConnected)
+        {
+          Status = OpcStatus.Connected;
+          NotifyServerConnectionRestored();
+        }
       }
     }
 
@@ -500,10 +511,21 @@ namespace Hylasoft.Opc.Ua
         ServerConnectionLost(this, EventArgs.Empty);
     }
 
+    private void NotifyServerConnectionRestored()
+    {
+      if (ServerConnectionRestored != null)
+        ServerConnectionRestored(this, EventArgs.Empty);
+    }
+
     /// <summary>
     /// This event is raised when the connection to the OPC server is lost.
     /// </summary>
     public event EventHandler ServerConnectionLost;
+
+    /// <summary>
+    /// This event is raised when the connection to the OPC server is restored.
+    /// </summary>
+    public event EventHandler ServerConnectionRestored;
 
   }
 
