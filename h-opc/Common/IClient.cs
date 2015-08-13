@@ -87,6 +87,8 @@ namespace Hylasoft.Opc.Common
     /// <summary>
     /// Explore a folder on the Opc Server asynchronously
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+      Justification = "Task")]
     Task<IEnumerable<Node>> ExploreFolderAsync(string tag);
   }
 }

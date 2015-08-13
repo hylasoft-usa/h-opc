@@ -71,7 +71,7 @@
     <Compile Include="Common\IClient.cs" />
     <Compile Include="Common\OpcException.cs" />
     <Compile Include="Common\OpcStatus.cs" />
-    <Compile Include="Da\DaClient _async.cs" />
+    <Compile Include="Da\DaClient_async.cs" />
     <Compile Include="Da\DaClient.cs" />
     <Compile Include="Da\DaNode.cs" />
     <Compile Include="Ua\ClientUtils.cs" />

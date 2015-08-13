@@ -12,6 +12,8 @@ namespace Hylasoft.Opc.Ua
   /// <summary>
   /// Client Implementation for UA
   /// </summary>
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling",
+    Justification = "Doesn't make sense to split this class")]
   public class UaClient : IClient<UaNode>
   {
     private readonly UaClientOptions _options = new UaClientOptions();
@@ -352,6 +354,9 @@ namespace Hylasoft.Opc.Ua
       return nodes;
     }
 
+    /// <summary>
+    /// Explores a folder asynchronously
+    /// </summary>
     public async Task<IEnumerable<Common.Node>> ExploreFolderAsync(string tag)
     {
       return await Task.Run(() => ExploreFolder(tag));
