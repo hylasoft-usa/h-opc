@@ -119,8 +119,7 @@ namespace Hylasoft.Opc.Tests
     {
       var node = _client.FindNode("Server.ServerStatus.BuildInfo");
 
-      // ReSharper disable once PossibleNullReferenceException
-      var subNodes = node.SubNodes;
+      var subNodes = _client.ExploreFolder(node.Tag);
       Expect(subNodes.Count()).ToBe(6);
     }
 

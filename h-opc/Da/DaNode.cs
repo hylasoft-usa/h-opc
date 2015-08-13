@@ -10,12 +10,11 @@ namespace Hylasoft.Opc.Da
     /// <summary>
     /// Instantiates a DaNode class
     /// </summary>
-    /// <param name="client">the client the node belongs to</param>
     /// <param name="name">the name of the node</param>
     /// <param name="tag"></param>
     /// <param name="parent">The parent node</param>
-    public DaNode(IClient<Node> client, string name, string tag, Node parent = null)
-      : base(client, name, parent)
+    public DaNode(string name, string tag, Node parent = null)
+      : base(name, parent)
     {
       Tag = tag;
     }

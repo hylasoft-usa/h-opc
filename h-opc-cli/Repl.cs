@@ -135,7 +135,7 @@ namespace Hylasoft.Opc.Cli
 
     private void ShowSubnodes()
     {
-      var nodes = _currentNode.SubNodes;
+      var nodes = _client.ExploreFolder(_currentNode.Tag);
       if (nodes == null || !nodes.Any())
         Console.WriteLine("no subnodes");
       else foreach (var node in nodes)
@@ -162,7 +162,7 @@ namespace Hylasoft.Opc.Cli
 
     private string GenerateRelativeTag(string relativeTag)
     {
-      var node = _currentNode.SubNodes
+      var node = _client.ExploreFolder(_currentNode.Tag)
         .SingleOrDefault(n => n.Name == relativeTag);
       return node == null ? relativeTag : node.Tag;
     }

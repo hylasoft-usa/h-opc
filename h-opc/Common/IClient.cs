@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Hylasoft.Opc.Common
 {
@@ -67,5 +68,25 @@ namespace Hylasoft.Opc.Common
     /// E.g: the tag `foo.bar` finds the sub nodes of `bar` on the folder `foo`</param>
     /// <returns>The list of sub-nodes</returns>
     IEnumerable<TNode> ExploreFolder(string tag);
+
+    /// <summary>
+    /// Read a tag asynchronusly
+    /// </summary>
+    Task<T> ReadAsync<T>(string tag);
+
+    /// <summary>
+    /// Write a value on the specified opc tag asynchronously
+    /// </summary>
+    Task WriteAsync<T>(string tag, T item);
+
+    /// <summary>
+    /// Finds a node on the Opc Server asynchronously
+    /// </summary>
+    Task<Node> FindNodeAsync(string tag);
+
+    /// <summary>
+    /// Explore a folder on the Opc Server asynchronously
+    /// </summary>
+    Task<IEnumerable<Node>> ExploreFolderAsync(string tag);
   }
 }
