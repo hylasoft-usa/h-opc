@@ -21,7 +21,7 @@ namespace Hylasoft.Opc.Ua
     private Session _session;
 
     private readonly IDictionary<string, UaNode> _nodesCache = new Dictionary<string, UaNode>();
-    private readonly IDictionary<string, IList<UaNode>> _folderCache = new Dictionary<string, IList<UaNode>>(); 
+    private readonly IDictionary<string, IList<UaNode>> _folderCache = new Dictionary<string, IList<UaNode>>();
 
     /// <summary>
     /// Creates a server object
@@ -387,10 +387,8 @@ namespace Hylasoft.Opc.Ua
     }
 
     /// <summary>
-    /// 
+    /// Find node asynchronously
     /// </summary>
-    /// <param name="tag"></param>
-    /// <returns></returns>
     public async Task<Common.Node> FindNodeAsync(string tag)
     {
       return await Task.Run(() => FindNode(tag));
