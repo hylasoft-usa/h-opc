@@ -15,12 +15,11 @@ namespace Hylasoft.Opc.Ua
     /// <summary>
     /// Instantiates a UaNode class
     /// </summary>
-    /// <param name="client">the client the node belongs to</param>
     /// <param name="name">the name of the node</param>
     /// <param name="nodeId">The UA Id of the node</param>
     /// <param name="parent">The parent node</param>
-    internal UaNode(IClient<UaNode> client, string name, string nodeId, Node parent = null)
-      : base(client, name, parent)
+    internal UaNode(string name, string nodeId, Node parent = null)
+      : base(name, parent)
     {
       NodeId = nodeId;
     }

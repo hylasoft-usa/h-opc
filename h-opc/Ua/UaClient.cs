@@ -12,12 +12,16 @@ namespace Hylasoft.Opc.Ua
   /// <summary>
   /// Client Implementation for UA
   /// </summary>
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling",
+    Justification = "Doesn't make sense to split this class")]
   public class UaClient : IClient<UaNode>
   {
     private readonly UaClientOptions _options = new UaClientOptions();
     private readonly Uri _serverUrl;
     private Session _session;
+
     private readonly IDictionary<string, UaNode> _nodesCache = new Dictionary<string, UaNode>();
+    private readonly IDictionary<string, IList<UaNode>> _folderCache = new Dictionary<string, IList<UaNode>>();
 
     /// <summary>
     /// Creates a server object
@@ -42,7 +46,7 @@ namespace Hylasoft.Opc.Ua
     private void PostInitializeSession()
     {
       var node = _session.NodeCache.Find(ObjectIds.ObjectsFolder);
-      RootNode = new UaNode(this, string.Empty, node.NodeId.ToString());
+      RootNode = new UaNode(string.Empty, node.NodeId.ToString());
       AddNodeToCache(RootNode);
       Status = OpcStatus.Connected;
     }
@@ -329,19 +333,33 @@ namespace Hylasoft.Opc.Ua
     /// <returns>The list of sub-nodes</returns>
     public IEnumerable<UaNode> ExploreFolder(string tag)
     {
+      IList<UaNode> nodes;
+      _folderCache.TryGetValue(tag, out nodes);
+      if (nodes != null)
+        return nodes;
+
       var folder = FindNode(tag);
-      var nodes = ClientUtils.Browse(_session, folder.NodeId)
+      nodes = ClientUtils.Browse(_session, folder.NodeId)
         .GroupBy(n => n.NodeId) //this is to select distinct
         .Select(n => n.First())
         .Where(n => n.NodeClass == NodeClass.Variable || n.NodeClass == NodeClass.Object)
-        .Select(n => n.ToHylaNode(this, folder))
+        .Select(n => n.ToHylaNode(folder))
         .ToList();
 
       //add nodes to cache
+      _folderCache.Add(tag, nodes);
       foreach (var node in nodes)
         AddNodeToCache(node);
 
       return nodes;
+    }
+
+    /// <summary>
+    /// Explores a folder asynchronously
+    /// </summary>
+    public async Task<IEnumerable<Common.Node>> ExploreFolderAsync(string tag)
+    {
+      return await Task.Run(() => ExploreFolder(tag));
     }
 
     /// <summary>
@@ -366,6 +384,14 @@ namespace Hylasoft.Opc.Ua
 
       // throws an exception if not found
       throw new OpcException(string.Format("The tag \"{0}\" doesn't exist on the Server", tag));
+    }
+
+    /// <summary>
+    /// Find node asynchronously
+    /// </summary>
+    public async Task<Common.Node> FindNodeAsync(string tag)
+    {
+      return await Task.Run(() => FindNode(tag));
     }
 
     /// <summary>
@@ -491,7 +517,7 @@ namespace Hylasoft.Opc.Ua
       UaNode found;
       try
       {
-        var subNodes = node.SubNodes.Cast<UaNode>();
+        var subNodes = ExploreFolder(node.Tag);
         found = subNodes.Single(n => n.Name == head);
       }
       catch (Exception ex)

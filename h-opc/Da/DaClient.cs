@@ -13,7 +13,7 @@ namespace Hylasoft.Opc.Da
   /// <summary>
   /// Client Implementation for DA
   /// </summary>
-  public class DaClient : IClient<DaNode>
+  public partial class DaClient : IClient<DaNode>
   {
     private readonly URL _url;
     private OpcDa.Server _server;
@@ -47,8 +47,9 @@ namespace Hylasoft.Opc.Da
         return;
       _server = new OpcDa.Server(new Factory(), _url);
       _server.Connect();
-      RootNode = new DaNode(this, string.Empty, string.Empty);
-      AddNodeToCache(RootNode);
+      var root = new DaNode(string.Empty, string.Empty);
+      RootNode = root;
+      AddNodeToCache(root);
     }
 
     /// <summary>
@@ -75,7 +76,6 @@ namespace Hylasoft.Opc.Da
     {
       var item = new OpcDa.Item { ItemName = tag };
       var result = _server.Read(new[] { item })[0];
-
       CheckResult(result, tag);
 
       return (T)result.Value;
@@ -144,7 +144,7 @@ namespace Hylasoft.Opc.Da
       var item = new OpcDa.Item { ItemName = tag };
       var result = _server.Read(new[] { item })[0];
       CheckResult(result, tag);
-      var node = new DaNode(this, item.ItemName, item.ItemName, RootNode);
+      var node = new DaNode(item.ItemName, item.ItemName, RootNode);
       AddNodeToCache(node);
       return node;
     }
@@ -165,7 +165,7 @@ namespace Hylasoft.Opc.Da
       var parent = FindNode(tag);
       OpcDa.BrowsePosition p;
       var nodes = _server.Browse(new ItemIdentifier(parent.Tag), new OpcDa.BrowseFilters(), out p)
-        .Select(t => new DaNode(this, t.Name, t.ItemName, parent))
+        .Select(t => new DaNode(t.Name, t.ItemName, parent))
         .ToList();
       //add nodes to cache
       foreach (var node in nodes)
