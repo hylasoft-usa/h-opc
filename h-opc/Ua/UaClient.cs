@@ -406,7 +406,7 @@ namespace Hylasoft.Opc.Ua
     {
       if (_session != null)
       {
-        _session.RemoveSubscriptions(_session.Subscriptions);
+        _session.RemoveSubscriptions(_session.Subscriptions.ToList());
         _session.Close();
         _session.Dispose();
       }
