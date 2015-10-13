@@ -45,8 +45,8 @@ You can use the node reference to explore the hieriarchy of nodes with the prope
 
 ````cs
 Node parentNode = node.Parent;
-IEnumerable<Node> children = node.SubNodes;
-IENumerable<Node> grandChildren = children.SelectMany(m => m.SubNodes);
+IEnumerable<Node> children = client.ExploreFolder(node.Tag);
+IENumerable<Node> grandChildren = children.SelectMany(m => client.ExploreFolder(m.Tag));
 ````
 
 #### Read a node
@@ -89,6 +89,10 @@ The second parameter is an `Action<T, Action>` that has two parameter:
 - `unsubscribe` is a function that unsubscribes the current monitored item. It's very handy when you want to terminate your callback
 
 it's **important** that you either enclose the client into a `using` statement or call `Dispose()` when you are finished, to unsubscribe all the monitored items and terminate the connection!
+
+### Go Asynchronous!
+
+Each method as an asynchornous counterpart that can be used with the async/await syntax. The asynchronous syntax is **recommended** over the synchronous one (maybe the synchronous one will be deprecated one day).
 
 ## Command line
 
