@@ -142,7 +142,15 @@ namespace Hylasoft.Opc.Da
 
       // try to find the tag otherwise
       var item = new OpcDa.Item { ItemName = tag };
-      var result = _server.Read(new[] { item })[0];
+      OpcDa.ItemValueResult result;
+      try
+      {
+        result = _server.Read(new[] { item })[0];
+      }
+      catch (NullReferenceException)
+      {
+        throw new OpcException("Could not find node because server not connected.");
+      }
       CheckResult(result, tag);
       var node = new DaNode(item.ItemName, item.ItemName, RootNode);
       AddNodeToCache(node);
