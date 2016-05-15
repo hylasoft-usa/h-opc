@@ -123,7 +123,20 @@ namespace Hylasoft.Opc.Da
         _server.CancelSubscription(sub)).Start();
 
       sub.DataChanged += (handle, requestHandle, values) =>
-        callback((T)values[0].Value, unsubscribe);
+      {
+        object isCastable;
+        // Make sure data can be cast
+        try
+        {
+          isCastable = (T)System.Convert.ChangeType(values[0].Value, typeof(T));
+        }
+        catch (InvalidCastException)
+        {
+          throw new InvalidCastException(string.Format("Could not monitor tag. Cast failed for type \"{0}\" on the new value \"{1}\" with type \"{2}\". Make sure tag data type matches.", typeof(T), values[0].Value, values[0].Value.GetType()));
+        }
+        if (isCastable == null) return;
+        callback((T)System.Convert.ChangeType(values[0].Value, typeof(T)), unsubscribe);
+      };
       sub.AddItems(new[] { new OpcDa.Item { ItemName = tag } });
       sub.SetEnabled(true);
     }
@@ -142,7 +155,15 @@ namespace Hylasoft.Opc.Da
 
       // try to find the tag otherwise
       var item = new OpcDa.Item { ItemName = tag };
-      var result = _server.Read(new[] { item })[0];
+      OpcDa.ItemValueResult result;
+      try
+      {
+        result = _server.Read(new[] { item })[0];
+      }
+      catch (NullReferenceException)
+      {
+        throw new OpcException("Could not find node because server not connected.");
+      }
       CheckResult(result, tag);
       var node = new DaNode(item.ItemName, item.ItemName, RootNode);
       AddNodeToCache(node);
