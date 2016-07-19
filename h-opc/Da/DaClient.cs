@@ -75,10 +75,17 @@ namespace Hylasoft.Opc.Da
     public T Read<T>(string tag)
     {
       var item = new OpcDa.Item { ItemName = tag };
+      if (Status == OpcStatus.NotConnected)
+      {
+        throw new OpcException(
+          "Server not connected. Cannot read tag."
+        );
+      }
       var result = _server.Read(new[] { item })[0];
       CheckResult(result, tag);
-
-      return (T)result.Value;
+      T casted;
+      TryCastResult(result.Value, out casted);
+      return casted;
     }
 
     /// <summary>
@@ -97,6 +104,27 @@ namespace Hylasoft.Opc.Da
       };
       var result = _server.Write(new[] { itmVal })[0];
       CheckResult(result, tag);
+    }
+
+    /// <summary>
+    /// Casts result of monitoring and reading values
+    /// </summary>
+    /// <param name="value">Value to convert</param>
+    /// <param name="casted">The casted result</param>
+    /// <typeparam name="T">Type of object to try to cast</typeparam>
+    public void TryCastResult<T>(object value, out T casted)
+    {
+      try
+      {
+        casted = (T)System.Convert.ChangeType(value, typeof(T));
+      }
+      catch (InvalidCastException)
+      {
+        throw new InvalidCastException(
+          string.Format(
+            "Could not monitor tag. Cast failed for type \"{0}\" on the new value \"{1}\" with type \"{2}\". Make sure tag data type matches.",
+            typeof(T), value, value.GetType()));
+      }
     }
 
     /// <summary>
@@ -124,18 +152,9 @@ namespace Hylasoft.Opc.Da
 
       sub.DataChanged += (handle, requestHandle, values) =>
       {
-        object isCastable;
-        // Make sure data can be cast
-        try
-        {
-          isCastable = (T)System.Convert.ChangeType(values[0].Value, typeof(T));
-        }
-        catch (InvalidCastException)
-        {
-          throw new InvalidCastException(string.Format("Could not monitor tag. Cast failed for type \"{0}\" on the new value \"{1}\" with type \"{2}\". Make sure tag data type matches.", typeof(T), values[0].Value, values[0].Value.GetType()));
-        }
-        if (isCastable == null) return;
-        callback((T)System.Convert.ChangeType(values[0].Value, typeof(T)), unsubscribe);
+        T casted;
+        TryCastResult(values[0].Value, out casted);
+        callback(casted, unsubscribe);
       };
       sub.AddItems(new[] { new OpcDa.Item { ItemName = tag } });
       sub.SetEnabled(true);
@@ -226,3 +245,4 @@ namespace Hylasoft.Opc.Da
     }
   }
 }
+
