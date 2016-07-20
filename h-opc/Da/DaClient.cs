@@ -39,8 +39,10 @@ namespace Hylasoft.Opc.Da
     /// <summary>
     /// OpcDa underlying server object.
     /// </summary>
-    protected OpcDa.Server Server {
-      get {
+    protected OpcDa.Server Server
+    {
+      get
+      {
         return _server;
       }
     }
