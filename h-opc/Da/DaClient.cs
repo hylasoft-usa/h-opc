@@ -39,7 +39,11 @@ namespace Hylasoft.Opc.Da
     /// <summary>
     /// OpcDa underlying server object.
     /// </summary>
-    protected OpcDa.Server Server => _server;
+    protected OpcDa.Server Server {
+      get {
+        return _server;
+      }
+    }
 
     #region interface methods
 
