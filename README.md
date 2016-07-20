@@ -5,9 +5,11 @@ An Opc Library and a command line to perform OPC operations with ease and transp
 
 ## Use
 
-A [nuget package](https://www.nuget.org/packages/Hylasoft.Opc/) is available for the library. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
+A [nuget package](https://www.nuget.org/packages/H.Opc/) is available for the library. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
 
-    PM> Install-Package Hylasoft.Opc
+    PM> Install-Package H.Opc
+
+*NOTE: Package was moved on NuGet.org from Hylasoft.Opc to H.Opc because of account issues*
 
 To install the command line interface, head to the [`release section`](https://github.com/hylasoft-usa/h-opc/releases).
 

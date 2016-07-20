@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>Hylasoft.Opc</id>
+    <id>H.Opc</id>
     <version>0.0</version> <!-- Not important, gets overridden by the grunt task -->
-    <title>Hylasoft.Opc</title>
+    <title>H.Opc</title>
     <description>Opc made simpler</description>
     <authors>Giacomo Tagliabue</authors>
     <language>en-US</language>
