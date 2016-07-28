@@ -1,4 +1,4 @@
-h-opc [![Build status](https://ci.appveyor.com/api/projects/status/wkcrsb9560sspprc?svg=true)](https://ci.appveyor.com/project/hylasoft/jmbeach/branch/master) [![NuGet Status](http://img.shields.io/nuget/v/H.Opc.svg)](https://www.nuget.org/packages/H.Opc) [![Coverage Status](https://coveralls.io/repos/github/jmbeach/h-opc/badge.svg?branch=master)](https://coveralls.io/github/jmbeach/h-opc?branch=master)
+h-opc [![Build status](https://ci.appveyor.com/api/projects/status/wkcrsb9560sspprc?svg=true)](https://ci.appveyor.com/project/jmbeach/h-opc/branch/master) [![NuGet Status](http://img.shields.io/nuget/v/H.Opc.svg)](https://www.nuget.org/packages/H.Opc) [![Coverage Status](https://coveralls.io/repos/github/jmbeach/h-opc/badge.svg?branch=master)](https://coveralls.io/github/jmbeach/h-opc?branch=master)
 ==============
 
 An Opc Library and a command line to perform OPC operations with ease and transparency among different protocols. Currently supports synchronous operation over UA and DA protocols.
