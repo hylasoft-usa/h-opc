@@ -1,4 +1,4 @@
-h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip/branch/master?svg=true)](https://ci.appveyor.com/project/hylasoft/h-opc/branch/master) [![NuGet Status](http://img.shields.io/nuget/v/H.Opc.svg)](https://www.nuget.org/packages/H.Opc)
+h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip/branch/master?svg=true)](https://ci.appveyor.com/project/hylasoft/h-opc/branch/master) [![NuGet Status](http://img.shields.io/nuget/v/H.Opc.svg)](https://www.nuget.org/packages/H.Opc) [![Coverage Status](https://coveralls.io/repos/github/jmbeach/h-opc/badge.svg?branch=master)](https://coveralls.io/github/jmbeach/h-opc?branch=master)
 ==============
 
 An Opc Library and a command line to perform OPC operations with ease and transparency among different protocols. Currently supports synchronous operation over UA and DA protocols.
@@ -109,6 +109,20 @@ Where `OpcType` is the type of opc to use (e.g: "UA", "DA"). Once the project is
 ## Build + Contribute
 
 The repository uses [cs-boilerplate](https://github.com/hylasoft-usa/cs-boilerplate). Read the readme of the cs-boilerplate repository to understand how to build, run tasks and commit your work to `master`.
+
+### Unit Testing
+
++ The unit tests rely on locally running test OPC servers. The ones used in this project are [OPC Foundation's Sample Server](https://opcfoundation.org/developer-tools/developer-kits-unified-architecture/sample-applications) 
+and [Matrikon OPC's test server](https://www.matrikonopc.com/products/opc-desktop-tools/opc-explorer.aspx)
+  + Both require you register with the website before you can download.
+
+#### UA
++ Open OPC Foundation's Sample Client (under Start -> OPC Foundation -> UA x.xx -> Sample Applications -> Opc.Ua.SampleClient.exe)
+  + This will start the server too
+  + Running tests will only work with this program open
+
+#### DA
++ With Matrikon OPC's test server installed, DA unit tests should work with or without the client running
 
 ## Disclaimer
 

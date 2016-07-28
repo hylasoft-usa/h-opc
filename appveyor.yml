@@ -4,8 +4,12 @@
 init:
   - git config --global core.autocrlf input
 
+configuration: Release
+
 # what combinations to test
 environment:
+  COVERALLS_REPO_TOKEN:
+    secure: cQNk8AJNS170fAjFz49c4KPd3F7pnlpgXVhQNBle8gdz6KdsSVxxi/EyQkXTGYvW
   matrix:
     - nodejs_version: 0.10
 
@@ -26,3 +30,13 @@ notifications:
     auth_token:
       secure: kZJj/SgQfdjaIEQXm6VjBl82Va3Hts5kn/qMoj19w36m5EbGoR+vjabZAq7xS2Mj
     channel: github
+
+test_script:
+- ps: >-
+    packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:"".\packages\NUnit.ConsoleRunner.3.4.1\tools\nunit3-console.exe""" "-targetargs:""tests\bin\$env:CONFIGURATION\tests.dll"" --x86" -output:opencoverCoverage.xml
+
+    $coveralls = (Resolve-Path "./packages/coveralls.net.*/tools/csmacnz.coveralls.exe").ToString()
+
+    $env:APPVEYOR_BUILD_NUMBER
+
+    .\packages\coveralls.net.0.6.0\tools\csmacnz.Coveralls.exe --opencover -i opencoverCoverage.xml --repoToken $env:COVERALLS_REPO_TOKEN --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_BUILD_NUMBER --serviceName appveyor

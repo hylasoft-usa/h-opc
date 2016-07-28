@@ -6,48 +6,50 @@ using Hylasoft.Behavior.Extensions;
 using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Ua;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using System.Configuration;
 
 namespace Hylasoft.Opc.Tests
 {
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Test Class"), TestClass]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Test Class"), TestFixture]
   public class UaTest : Spec
   {
     private UaClient _client;
 
-    [TestInitialize]
+    [SetUp]
     public void Init()
     {
-      _client = new UaClient(new Uri("opc.tcp://giacomo-hyla:51210/UA/SampleServer"));
+      _client = new UaClient(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
       _client.Connect();
     }
 
-    [TestCleanup]
+    [TearDown]
     public void Cleanup()
     {
       _client.Dispose();
     }
 
-    [TestMethod]
+    [Test]
     public void StatusTest()
     {
       Expect(_client.Status).ToBe(OpcStatus.Connected);
     }
 
-    [TestMethod]
+    [Test]
     public void FindNodeTest()
     {
       var node = _client.FindNode("Data.Dynamic.Scalar.SByteValue");
       Expect(node).ToNotBeNull();
     }
 
-    [TestMethod]
+    [Test]
     public void ReadNodeTest()
     {
       var val = _client.Read<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
       Expect(val).ToBe("OPC Foundation");
     }
 
-    [TestMethod]
+    [Test]
     public void WriteNodeTest()
     {
       const string tag = "Data.Static.Scalar.ByteValue";
@@ -62,14 +64,14 @@ namespace Hylasoft.Opc.Tests
     }
 
 
-    [TestMethod]
+    [Test]
     public void ReadArrayNodeTest()
     {
       var val = _client.Read<bool[]>("Data.Static.Array.BooleanValue");
       Expect(val.Length).ToBeGreaterThan(0);
     }
 
-    [TestMethod]
+    [Test]
     public void WriteArrayNodeTest()
     {
       const string tag = "Data.Static.Array.BooleanValue";
@@ -86,7 +88,7 @@ namespace Hylasoft.Opc.Tests
       Expect(val.Zip(val2, (a, b) => a == b)).ToNotContain(false);
     }
 
-    [TestMethod]
+    [Test]
     public void FailWriteTest()
     {
       // fails for wrong tag
@@ -102,7 +104,7 @@ namespace Hylasoft.Opc.Tests
         .ToThrowException<OpcException>();
     }
 
-    [TestMethod]
+    [Test]
     public void FailReadTest()
     {
       // fails for wrong tag
@@ -114,7 +116,7 @@ namespace Hylasoft.Opc.Tests
         .ToThrowException<OpcException>();
     }
 
-    [TestMethod]
+    [Test]
     public void BrowseFolderTest()
     {
       var node = _client.FindNode("Server.ServerStatus.BuildInfo");
@@ -123,7 +125,7 @@ namespace Hylasoft.Opc.Tests
       Expect(subNodes.Count()).ToBe(6);
     }
 
-    [TestMethod]
+    [Test]
     public void MonitorTest()
     {
       const string tag = "Data.Static.Scalar.ByteValue";

@@ -114,4 +114,14 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['nugetrestore','msbuild:debug', 'mstest']);
   grunt.registerTask('release', ['assemblyinfo', 'test']);
   grunt.registerTask('publishNuget', ['release', 'msbuild:release', 'nugetpack', 'nugetpush', 'clean:nuget']);
+	grunt.registerTask('coverage', '', function() {
+		var exec = require('child_process').execSync;
+		var result = exec('packages\\OpenCover.4.6.519\\tools\\OpenCover.Console.exe -register:user -target:nunit-console.exe "-targetargs:""tests\\bin\\Debug\\tests.dll"" "--x86 -output:opencoverCoverage.xml', { encoding: 'utf8' });
+		grunt.log.writeln(result);
+	});
+	grunt.registerTask('viewCoverage', '', function() {
+		var exec = require('child_process').execSync;
+		var result = exec('packages\\ReportGenerator.2.4.5.0\\tools\\ReportGenerator.exe -reports:"opencoverCoverage.xml" -targetdir:"code_coverage"', { encoding: 'utf8' });
+		exec('explorer code_coverage\\index.htm', { encoding: 'utf8' });
+	});
 };

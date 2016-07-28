@@ -132,6 +132,8 @@ publish/
 
 # NuGet Packages
 *.nupkg
+.nuget/*
+
 # The packages folder can be ignored because of Package Restore
 **/packages/*
 # except build/, which is used as an MSBuild target.
@@ -184,3 +186,10 @@ FakesAssemblies/
 
 # Stylecop cache
 StyleCop.Cache
+
+# Open Cover
+code_coverage/
+opencoverCoverage.xml
+
+# NUnit
+results.xml
