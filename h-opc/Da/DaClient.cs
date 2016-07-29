@@ -16,7 +16,7 @@ namespace Hylasoft.Opc.Da
   public partial class DaClient : IClient<DaNode>
   {
     private readonly URL _url;
-    private OpcDa.Server _server;
+    private OpcDa.Server _server { get; set; }
     private long _sub;
     private readonly IDictionary<string, DaNode> _nodesCache = new Dictionary<string, DaNode>();
 
