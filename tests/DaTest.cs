@@ -7,6 +7,8 @@ using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Da;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
+using OpcDa = Opc.Da;
+using Moq;
 
 namespace Hylasoft.Opc.Tests
 {

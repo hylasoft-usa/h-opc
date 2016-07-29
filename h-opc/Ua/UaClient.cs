@@ -18,7 +18,7 @@ namespace Hylasoft.Opc.Ua
   {
     private readonly UaClientOptions _options = new UaClientOptions();
     private readonly Uri _serverUrl;
-    protected Session _session { get; set; }
+    private Session _session;
 
     private readonly IDictionary<string, UaNode> _nodesCache = new Dictionary<string, UaNode>();
     private readonly IDictionary<string, IList<UaNode>> _folderCache = new Dictionary<string, IList<UaNode>>();
@@ -42,6 +42,16 @@ namespace Hylasoft.Opc.Ua
       get { return _options; }
     }
 
+    /// <summary>
+    /// OPC Foundation underlying session object
+    /// </summary>
+    protected Session Session
+    {
+      get
+      {
+        return _session;
+      }
+    }
 
     private void PostInitializeSession()
     {
