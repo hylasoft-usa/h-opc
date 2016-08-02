@@ -12,17 +12,6 @@ using System.Threading.Tasks;
 
 namespace Hylasoft.Opc.Tests
 {
-  public class TestExtendDaClient : DaClient
-  {
-    public TestExtendDaClient(Uri server) : base(server) { }
-    public OpcDa.Server ExposedServer
-    {
-      get
-      {
-        return this.Server;
-      }
-    }
-  }
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Test Class"), TestFixture]
   public class DaTest : Spec
   {
@@ -121,7 +110,7 @@ namespace Hylasoft.Opc.Tests
     [Test]
     public void DaExploreFolder()
     {
-      var rootTags = _client.ExploreFolder("");
+      var rootTags = _client.ExploreFolder(string.Empty);
       Assert.Greater(rootTags.Count(), 0);
     }
   }
