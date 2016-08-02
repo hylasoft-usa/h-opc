@@ -37,8 +37,6 @@ test_script:
 
     choco install grayboxsimulator -version 1.8.0 -y
 
-    & 'C:\Program Files (x86)\Graybox\Gray Simulator\gb_opcsim.exe' -service
-
     packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:"".\packages\NUnit.ConsoleRunner.3.4.1\tools\nunit3-console.exe""" "-targetargs:""tests\bin\$env:CONFIGURATION\tests.dll"" --x86" -output:opencoverCoverage.xml
 
     $coveralls = (Resolve-Path "./packages/coveralls.net.*/tools/csmacnz.coveralls.exe").ToString()

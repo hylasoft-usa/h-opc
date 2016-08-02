@@ -23,7 +23,7 @@ namespace Hylasoft.Opc.Tests
       _client = new DaClient(new Uri("opcda://localhost/Graybox.Simulator"));
       _client.Connect();
       // have to assign to graybox simulation items once to activate them
-      _client.Write<double>("storage.numeric.reg02", 4);
+      _client.Write<double>("storage.numeric.reg06", 4);
     }
     [TearDown]
     public void Cleanup()
@@ -38,13 +38,13 @@ namespace Hylasoft.Opc.Tests
     [Test]
     public void FindNodeTest()
     {
-      var node = _client.FindNode("storage.numeric.reg02");
+      var node = _client.FindNode("storage.numeric.reg06");
       Expect(node).ToNotBeNull();
     }
     [Test]
     public void DaReadDouble()
     {
-      var val = _client.Read<double>("storage.numeric.reg02");
+      var val = _client.Read<double>("storage.numeric.reg06");
       Expect(val).ToBe(4);
     }
   }
