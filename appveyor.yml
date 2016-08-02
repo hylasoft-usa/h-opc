@@ -43,13 +43,13 @@ test_script:
 
     $outputOpcCore = "opccore.zip"
 
-    $client.DownloadFile($urlGraySimulator, $outputGraySimulator)
+    wget $urlGraySimulator -OutFile $outputGraySimulator
 
-    $client.DownloadFile($urlOpcCore, $outputOpcCore)
+    wget $urlOpcCore -OutFile $outputOpcCore
 
-    & '7z' e gray.zip -ogray
+    7z e gray.zip -ogray
 
-    & '7z' e opccore.zip -oopccore
+    7z e opccore.zip -oopccore
 
     msiexec.exe /i 'opccore\OPC Core Components Redistributable (x64).msi' /qn /log install.log
 
