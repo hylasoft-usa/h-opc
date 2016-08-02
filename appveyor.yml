@@ -33,9 +33,9 @@ notifications:
 
 test_script:
 - ps: >-
-    wget http://gray-box.net/files/gray_simulator.zip -OutputFile gray.zip
+    wget http://gray-box.net/files/gray_simulator.zip -OutFile gray.zip
 
-    wget https://www.dropbox.com/s/ukj9ehb17yy87zk/opc-core-components-redistributable-x64-106.0-20160607%20%281%29.zip?dl=1 -OutputFile opccore.zip
+    wget https://www.dropbox.com/s/ukj9ehb17yy87zk/opc-core-components-redistributable-x64-106.0-20160607%20%281%29.zip?dl=1 -OutFile opccore.zip
 
     ls
 
