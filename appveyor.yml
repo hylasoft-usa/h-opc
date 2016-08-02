@@ -45,7 +45,7 @@ test_script:
 
     $client.DownloadFile($urlGraySimulator, $outputGraySimulator)
 
-    $client.DownloadFile($urlOpcCore -OutFile $outputOpcCore)
+    $client.DownloadFile($urlOpcCore, $outputOpcCore)
 
     7z e gray.zip -ogray
 
