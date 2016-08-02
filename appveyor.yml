@@ -43,9 +43,9 @@ test_script:
 
     $outputOpcCore = "opccore.zip"
 
-    wget $urlGraySimulator -OutFile $outputGraySimulator
+    $client.DownloadFile($urlGraySimulator, $outputGraySimulator)
 
-    wget $urlOpcCore -OutFile $outputOpcCore
+    $client.DownloadFile($urlOpcCore -OutFile $outputOpcCore)
 
     7z e gray.zip -ogray
 
