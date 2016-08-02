@@ -35,23 +35,9 @@ test_script:
 - ps: >-
     wget http://gray-box.net/files/gray_simulator.zip -OutFile gray.zip
 
-    wget https://www.dropbox.com/s/ukj9ehb17yy87zk/opc-core-components-redistributable-x64-106.0-20160607%20%281%29.zip?dl=1 -OutFile opccore.zip
-
-    ls
-
     7z e gray.zip -ogray
 
-    7z e opccore.zip -oopccore
-
-    ls
-
-    msiexec.exe /i 'opccore\OPC Core Components Redistributable (x64).msi' /qn /log install.log
-
-    ls
-
-    ls opccore
-
-    type install.log
+    choco install opcclassiccorecomponents -version 106.0.201
 
     msiexec.exe /i 'gray\gbopcsim18.msi' /qn /log install.log
 
