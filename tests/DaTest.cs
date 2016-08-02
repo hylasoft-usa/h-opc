@@ -20,7 +20,7 @@ namespace Hylasoft.Opc.Tests
     [SetUp]
     public void Init()
     {
-      _client = new DaClient(new Uri("opcda://localhost/Matrikon.OPC.Simulation.1"));
+      _client = new DaClient(new Uri("opcda://localhost/Graybox.Simulator"));
       _client.Connect();
     }
     [TearDown]
@@ -36,14 +36,14 @@ namespace Hylasoft.Opc.Tests
     [Test]
     public void FindNodeTest()
     {
-      var node = _client.FindNode("Bucket Brigade.UInt1");
+      var node = _client.FindNode("numeric.random.double");
       Expect(node).ToNotBeNull();
     }
     [Test]
-    public void ReadNodeTest()
+    public void DaReadDouble()
     {
-      var val = _client.Read<bool>("Bucket Brigade.Boolean");
-      Expect(val).ToBeInstanceOf(typeof(bool));
+      var val = _client.Read<double>("numeric.random.double");
+      Expect(val).ToBeInstanceOf(typeof(double));
     }
   }
 }
