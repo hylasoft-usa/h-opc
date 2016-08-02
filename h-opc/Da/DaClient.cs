@@ -125,7 +125,7 @@ namespace Hylasoft.Opc.Da
     {
       try
       {
-        casted = (T)System.Convert.ChangeType(value, typeof(T));
+        casted = (T)value;
       }
       catch (InvalidCastException)
       {

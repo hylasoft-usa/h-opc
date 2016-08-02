@@ -124,4 +124,5 @@ module.exports = function(grunt) {
 		var result = exec('packages\\ReportGenerator.2.4.5.0\\tools\\ReportGenerator.exe -reports:"opencoverCoverage.xml" -targetdir:"code_coverage"', { encoding: 'utf8' });
 		exec('explorer code_coverage\\index.htm', { encoding: 'utf8' });
 	});
+	grunt.registerTask('coverageAll', ['coverage', 'viewCoverage']);
 };
