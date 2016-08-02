@@ -43,7 +43,13 @@ test_script:
 
     7z e opccore.zip -oopccore
 
+    ls
+
     msiexec.exe /i 'opccore\OPC Core Components Redistributable (x64).msi' /qn /log install.log
+
+    ls
+
+    ls opccore
 
     type install.log
 
