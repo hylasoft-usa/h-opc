@@ -5,10 +5,10 @@ using Hylasoft.Behavior;
 using Hylasoft.Behavior.Extensions;
 using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Da;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using OpcDa = Opc.Da;
 using Moq;
+using System.Threading.Tasks;
 
 namespace Hylasoft.Opc.Tests
 {
@@ -16,12 +16,16 @@ namespace Hylasoft.Opc.Tests
   public class DaTest : Spec
   {
     private DaClient _client;
+    private const string TestRegister = "storage.numeric.reg06";
+    private const string ClientUrl = "opcda://localhost/Graybox.Simulator";
 
     [SetUp]
     public void Init()
     {
-      _client = new DaClient(new Uri("opcda://localhost/Matrikon.OPC.Simulation.1"));
+      _client = new DaClient(new Uri(ClientUrl));
       _client.Connect();
+      // have to assign to graybox simulation items once to activate them
+      _client.Write<double>(TestRegister, 4);
     }
     [TearDown]
     public void Cleanup()
@@ -36,14 +40,78 @@ namespace Hylasoft.Opc.Tests
     [Test]
     public void FindNodeTest()
     {
-      var node = _client.FindNode("Bucket Brigade.UInt1");
+      var node = _client.FindNode(TestRegister);
       Expect(node).ToNotBeNull();
     }
     [Test]
-    public void ReadNodeTest()
+    public void DaReadDouble()
     {
-      var val = _client.Read<bool>("Bucket Brigade.Boolean");
-      Expect(val).ToBeInstanceOf(typeof(bool));
+      var val = _client.Read<double>(TestRegister);
+      Expect(val).ToBe(4);
+    }
+    [Test]
+    public void DaReadAsyncDouble()
+    {
+      var task = _client.ReadAsync<double>(TestRegister);
+      task.Wait();
+      Expect(task.Result).ToBe(4);
+      task = _client.ReadAsync<double>(TestRegister);
+      // didn't wait
+      Expect(task.IsCompleted).ToBe(false);
+    }
+    [Test]
+    public void DaReadWrongType()
+    {
+      Assert.Throws<InvalidCastException>(() =>
+      {
+        _client.Read<bool>(TestRegister);
+      });
+    }
+    [Test]
+    public void DaTestExtend()
+    {
+      var extendedClient = new TestExtendDaClient(new Uri(ClientUrl));
+      extendedClient.Connect();
+      Assert.AreEqual(typeof(OpcDa.Server), extendedClient.ExposedServer.GetType());
+      extendedClient.Dispose();
+    }
+    [Test]
+    public void DaMonitor()
+    {
+      var executed = 0;
+      var tag = TestRegister;
+      _client.Monitor<double>(tag, (val1, u) =>
+      {
+        executed++;
+        u();
+      });
+      _client.Monitor<double>(tag, (val1, u) =>
+      {
+        executed++;
+        u();
+      });
+      _client.Monitor<double>(tag, (val1, u) =>
+      {
+        executed++;
+        u();
+      });
+      const int interval = 100;
+      Thread.Sleep(interval);
+      _client.Write(tag, 10);
+      Thread.Sleep(interval);
+      _client.Write(tag, 11);
+      Thread.Sleep(interval);
+      _client.Write(tag, 12);
+      Thread.Sleep(interval);
+      _client.Write(tag, 13);
+      Thread.Sleep(interval);
+      Expect(executed).ToBe(3);
+    }
+    [Test]
+    public void DaExploreFolder()
+    {
+      var rootTags = _client.ExploreFolder(string.Empty);
+      Assert.Greater(rootTags.Count(), 0);
     }
   }
 }

@@ -33,11 +33,9 @@ notifications:
 
 test_script:
 - ps: >-
-    wget https://www.dropbox.com/s/ds9119xshsfqvr0/matrikon.cameyo.7z?dl=1 -OutFile matrikon.7z
+    choco install opcclassiccorecomponents -version 106.0.201 -y
 
-    7z e matrikon.7z
-
-    "MatrikonOPC Explorer MatrikonOPC Server.cameyo.exe" -exec #3
+    choco install grayboxsimulator -version 1.8.0 -y
 
     packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:"".\packages\NUnit.ConsoleRunner.3.4.1\tools\nunit3-console.exe""" "-targetargs:""tests\bin\$env:CONFIGURATION\tests.dll"" --x86" -output:opencoverCoverage.xml
 
@@ -45,4 +43,4 @@ test_script:
 
     $env:APPVEYOR_BUILD_NUMBER
 
-    .\packages\coveralls.net.0.6.0\tools\csmacnz.Coveralls.exe --opencover -i opencoverCoverage.xml --repoToken $env:COVERALLS_REPO_TOKEN --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_BUILD_NUMBER --serviceName appveyor
+    .\packages\coveralls.net.0.6.0\tools\csmacnz.Coveralls.exe --opencover -i opencoverCoverage.xml --repoToken $env:COVERALLS_REPO_TOKEN --useRelativePaths --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_BUILD_NUMBER --serviceName appveyor
