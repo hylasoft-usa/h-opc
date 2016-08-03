@@ -27,12 +27,13 @@ namespace Hylasoft.Opc.Tests
     }
 
     // always disconnected
-    public OpcStatus Status
+    public new OpcStatus Status
     {
       get
       {
         return OpcStatus.NotConnected;
       }
+
       set
       {
         _discard = value;
