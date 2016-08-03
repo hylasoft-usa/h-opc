@@ -11,8 +11,6 @@ namespace Hylasoft.Opc.Tests
 {
   public class TestUaClientNotConnected : UaClient
   {
-    private OpcStatus _discard;
-
     public TestUaClientNotConnected(Uri server)
       : base(server)
     {
@@ -32,11 +30,6 @@ namespace Hylasoft.Opc.Tests
       get
       {
         return OpcStatus.NotConnected;
-      }
-
-      set
-      {
-        _discard = value;
       }
     }
   }
