@@ -5,9 +5,10 @@ using Hylasoft.Behavior;
 using Hylasoft.Behavior.Extensions;
 using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Ua;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using System.Configuration;
+using Opc.Ua.Client;
+using Opc.Ua;
 
 namespace Hylasoft.Opc.Tests
 {
@@ -156,6 +157,33 @@ namespace Hylasoft.Opc.Tests
       _client.Write(tag, (byte)13);
       Thread.Sleep(interval);
       Expect(executed).ToBe(3);
+    }
+
+    [Test]
+    public void UaTestExtension()
+    {
+      var client = new TestExtendUaClient(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
+      client.Connect();
+      Assert.IsInstanceOf(typeof(Session), client.SessionExtended);
+    }
+
+    [Test]
+    public void UaTestKeepAliveNotifyDisconnect()
+    {
+      // this client's Status is always NotConnected
+      var client = new TestUaClientNotConnected(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
+      client.Connect();
+      var i = 0;
+      // should get hit in the SessionKeepAlive and SessionClosing functions
+      client.ServerConnectionLost += (object sender, EventArgs e) =>
+      {
+        i++;
+      };
+      // close the connection
+      client.SessionExtended.Close();
+      // and wait
+      Thread.Sleep(200);
+      Assert.AreEqual(2, i);
     }
   }
 }
