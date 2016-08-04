@@ -192,5 +192,28 @@ namespace Hylasoft.Opc.Tests
        * NotConnected */
       Assert.AreEqual(1, i);
     }
+
+    [Test]
+    public void UaTestKeepAliveReConnect()
+    {
+      var client = new TestExtendUaClient(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
+      client.Connect();
+      var i = 0;
+      client.ServerConnectionLost += (object sender, EventArgs e) =>
+      {
+        i++;
+        Assert.AreEqual(OpcStatus.NotConnected, client.Status);
+        client.ReConnect();
+        client.SessionExtended.OperationTimeout = 200;
+        client.SessionExtended.KeepAliveInterval = 100;
+      };
+      client.SessionExtended.OperationTimeout = 0;
+      client.SessionExtended.KeepAliveInterval = 10;
+      Thread.Sleep(100);
+      Assert.Greater(i, 0);
+      // Give some time to call reconnect
+      Thread.Sleep(100);
+      Assert.AreEqual(OpcStatus.Connected, client.Status);
+    }
   }
 }
