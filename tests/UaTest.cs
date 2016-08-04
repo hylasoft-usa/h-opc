@@ -9,6 +9,7 @@ using NUnit.Framework;
 using System.Configuration;
 using Opc.Ua.Client;
 using Opc.Ua;
+using System.Collections.Generic;
 
 namespace Hylasoft.Opc.Tests
 {
@@ -170,20 +171,26 @@ namespace Hylasoft.Opc.Tests
     [Test]
     public void UaTestKeepAliveNotifyDisconnect()
     {
-      // this client's Status is always NotConnected
-      var client = new TestUaClientNotConnected(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
+      var client = new TestExtendUaClient(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
       client.Connect();
       var i = 0;
-      // should get hit in the SessionKeepAlive and SessionClosing functions
       client.ServerConnectionLost += (object sender, EventArgs e) =>
       {
         i++;
       };
-      // close the connection
-      client.SessionExtended.Close();
-      // and wait
-      Thread.Sleep(200);
-      Assert.AreEqual(2, i);
+      /* Basicallly kill server by not letting any
+       * operations complete */
+      client.SessionExtended.OperationTimeout = 0;
+      // make sure sessionkeepalive executes at least once
+      client.SessionExtended.KeepAliveInterval = 10;
+      // give ample time to call sessionkeepalive
+      Thread.Sleep(100);
+      /* 'i' should only be one because SessionKeepAlive
+       * only calls ServerConnectionLost if Status
+       * is connected. Before it calls
+       * ServerConnectionLost, it sets Status to
+       * NotConnected */
+      Assert.AreEqual(1, i);
     }
   }
 }
