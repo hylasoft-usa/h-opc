@@ -229,5 +229,37 @@ namespace Hylasoft.Opc.Tests
       Thread.Sleep(100);
       Assert.AreNotSame(oldSession, client.SessionExtended);
     }
+
+    [Test]
+    public void UaTestReadTagAsync()
+    {
+      var task = _client.ReadAsync<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
+      task.Wait();
+      Expect(task.Result).ToBe("OPC Foundation");
+    }
+
+    [Test]
+    public void UaWriteAsync()
+    {
+      const string tag = "Data.Static.Scalar.ByteValue";
+      var task = _client.WriteAsync(tag, (byte)3);
+      var i = 0;
+      /* task.Wait broken because task is never set
+       * unless exception */
+      Task.Run(() =>
+      {
+        task.Wait();
+        i++;
+      });
+      Thread.Sleep(200);
+      Assert.AreEqual(1, i);
+      var val = _client.Read<byte>(tag);
+      Expect(val).ToBe(3);
+
+      task = _client.WriteAsync(tag, (byte)13);
+      task.Wait();
+      val = _client.Read<byte>(tag);
+      Expect(val).ToBe(13);
+    }
   }
 }
