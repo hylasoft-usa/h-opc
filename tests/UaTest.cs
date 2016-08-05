@@ -212,6 +212,7 @@ namespace Hylasoft.Opc.Tests
       Session oldSession = null;
       client.ServerConnectionLost += (object sender, EventArgs e) =>
       {
+        if (i > 0) return;
         i++;
         Assert.AreEqual(OpcStatus.NotConnected, client.Status);
         // store the session to make sure a new one is created
