@@ -125,7 +125,7 @@ module.exports = function(grunt) {
   grunt.registerTask('publishNuget', ['release', 'msbuild:release', 'nugetpack', 'nugetpush', 'clean:nuget']);
 	grunt.registerTask('coverage', '', function() {
 		var exec = require('child_process').execSync;
-		var result = exec('packages\\OpenCover.4.6.519\\tools\\OpenCover.Console.exe -register:user -target:n.\\packages\\NUnit.ConsoleRunner.3.4.1\\tools\\nunit3-console.exe "-targetargs:""tests\\bin\\Debug\\tests.dll"" "--x86 -output:opencoverCoverage.xml', { encoding: 'utf8' });
+		var result = exec('packages\\OpenCover.4.6.519\\tools\\OpenCover.Console.exe -register:user -target:.\\packages\\NUnit.ConsoleRunner.3.4.1\\tools\\nunit3-console.exe "-targetargs:""tests\\bin\\Debug\\tests.dll"" "--x86 -output:opencoverCoverage.xml', { encoding: 'utf8' });
 		grunt.log.writeln(result);
 	});
 	grunt.registerTask('viewCoverage', '', function() {

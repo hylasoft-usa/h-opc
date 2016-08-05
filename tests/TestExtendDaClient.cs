@@ -1,4 +1,5 @@
-﻿using Hylasoft.Opc.Da;
+﻿using Hylasoft.Opc.Common;
+using Hylasoft.Opc.Da;
 using System;
 using System.Collections.Generic;
 using System.Linq;
