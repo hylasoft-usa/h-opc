@@ -10,6 +10,7 @@ using System.Configuration;
 using Opc.Ua.Client;
 using Opc.Ua;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Hylasoft.Opc.Tests
 {
@@ -194,16 +195,29 @@ namespace Hylasoft.Opc.Tests
     }
 
     [Test]
-    public void UaTestKeepAliveReConnect()
+    public void UaTestReConnect()
+    {
+      var client = new TestExtendUaClient(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
+      /* Should throw error because session should not be
+       * initialized without calling connect */
+      Assert.Throws<System.NullReferenceException>(() => client.ReConnect());
+    }
+
+    [Test]
+    public void UaTestSessionRecreate()
     {
       var client = new TestExtendUaClient(new Uri(ConfigurationManager.AppSettings["UATestEndpoint"]));
       client.Connect();
       var i = 0;
+      Session oldSession = null;
       client.ServerConnectionLost += (object sender, EventArgs e) =>
       {
         i++;
         Assert.AreEqual(OpcStatus.NotConnected, client.Status);
-        client.ReConnect();
+        // store the session to make sure a new one is created
+        oldSession = client.SessionExtended;
+        client.RecreateSession();
+        // put server back in good working order
         client.SessionExtended.OperationTimeout = 200;
         client.SessionExtended.KeepAliveInterval = 100;
       };
@@ -211,9 +225,9 @@ namespace Hylasoft.Opc.Tests
       client.SessionExtended.KeepAliveInterval = 10;
       Thread.Sleep(100);
       Assert.Greater(i, 0);
-      // Give some time to call reconnect
+      // Give some time to call recreate
       Thread.Sleep(100);
-      Assert.AreEqual(OpcStatus.Connected, client.Status);
+      Assert.AreNotSame(oldSession, client.SessionExtended);
     }
   }
 }
