@@ -3,6 +3,23 @@ h-opc [![Build status](https://ci.appveyor.com/api/projects/status/wkcrsb9560ssp
 
 An Opc Library and a command line to perform OPC operations with ease and transparency among different protocols. Currently supports synchronous operation over UA and DA protocols.
 
+## Table of Contents
+* [Use](#use)
+* [Documentation](#documentation)
+        * [Exploring the nodes](#exploring-the-nodes)
+        * [Read a node](#read-a-node)
+        * [Writing to a node](#writing-to-a-node)
+        * [Monitoring a tag](#monitoring-a-tag)
+    * [Go Asynchronous!](#go-asynchronous)
+* [Command line](#command-line)
+* [Build + Contribute](#build--contribute)
+    * [Unit Testing](#unit-testing)
+        * [UA](#ua)
+        * [DA](#da)
+* [Disclaimer](#disclaimer)
+* [Roadmap](#roadmap)
+
+
 ## Use
 
 A [nuget package](https://www.nuget.org/packages/H.Opc/) is available for the library. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
@@ -112,9 +129,9 @@ The repository uses [cs-boilerplate](https://github.com/hylasoft-usa/cs-boilerpl
 
 ### Unit Testing
 
-+ The unit tests rely on locally running test OPC servers. The ones used in this project are [OPC Foundation's Sample Server](https://opcfoundation.org/developer-tools/developer-kits-unified-architecture/sample-applications) 
-and [Matrikon OPC's test server](https://www.matrikonopc.com/products/opc-desktop-tools/opc-explorer.aspx)
-  + Both require you register with the website before you can download.
++ The unit tests rely on locally running test OPC servers. The ones used in this project are [OPC Foundation's Sample Server](https://opcfoundation.org/developer-tools/developer-kits-unified-architecture/sample-applications)
+and [Graybox Simulator](http://gray-box.net/download_graysim.php?lang=en)
+  + OPC Foundation's Sample Server requires you register with the website before you can download.
 
 #### UA
 + Open OPC Foundation's Sample Client (under Start -> OPC Foundation -> UA x.xx -> Sample Applications -> Opc.Ua.SampleClient.exe)
@@ -122,7 +139,7 @@ and [Matrikon OPC's test server](https://www.matrikonopc.com/products/opc-deskto
   + Running tests will only work with this program open
 
 #### DA
-+ With Matrikon OPC's test server installed, DA unit tests should work with or without the client running
++ With Graybox Simulator installed, tests should automatically work
 
 ## Disclaimer
 
