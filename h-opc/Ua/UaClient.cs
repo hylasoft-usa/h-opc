@@ -106,8 +106,6 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public void ReConnect()
     {
-      if (Status != OpcStatus.Connected)
-        return;
       Status = OpcStatus.NotConnected;
       _session.Reconnect();
       Status = OpcStatus.Connected;
@@ -118,9 +116,6 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public void RecreateSession()
     {
-      if (Status != OpcStatus.Connected)
-        return;
-
       Status = OpcStatus.NotConnected;
       _session = Session.Recreate(_session);
       PostInitializeSession();
@@ -261,7 +256,7 @@ namespace Hylasoft.Opc.Ua
       var nodesToWrite = BuildWriteValueCollection(tag, Attributes.Value, item);
 
       // Wrap the WriteAsync logic in a TaskCompletionSource, so we can use C# async/await syntax to call it:
-      var taskCompletionSource = new TaskCompletionSource<T>();
+      var taskCompletionSource = new TaskCompletionSource<StatusCode>();
       _session.BeginWrite(
           requestHeader: null,
           nodesToWrite: nodesToWrite,
@@ -277,6 +272,7 @@ namespace Hylasoft.Opc.Ua
             {
               CheckReturnValue(response.ServiceResult);
               CheckReturnValue(results[0]);
+              taskCompletionSource.SetResult(response.ServiceResult);
             }
             catch (Exception ex)
             {

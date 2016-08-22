@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hylasoft.Opc.Common;
-using OpcDa = Opc.Da;
 
 namespace Hylasoft.Opc.Da
 {
