@@ -9,6 +9,7 @@ namespace Hylasoft.Opc.Cli
   {
     private readonly IClient<Node> _client;
     private Node _currentNode;
+    private bool _keepAlive = true;
 
     public Repl(IClient<Node> client)
     {
@@ -21,7 +22,7 @@ namespace Hylasoft.Opc.Cli
     /// </summary>
     public void Start()
     {
-      while (true)
+      while (_keepAlive)
       {
         try
         {
@@ -73,6 +74,10 @@ namespace Hylasoft.Opc.Cli
           break;
         case SupportedCommands.Cd:
           Cd(command.Args);
+          break;
+        case SupportedCommands.Exit:
+          _client.Dispose();
+          _keepAlive = false;
           break;
         default:
           throw new BadCommandException();

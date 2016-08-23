@@ -12,6 +12,7 @@ namespace Hylasoft.Opc.Cli
     Root,
     Up,
     Monitor,
-    Cd
+    Cd,
+    Exit
   }
 }
