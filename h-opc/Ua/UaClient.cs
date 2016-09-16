@@ -353,7 +353,8 @@ namespace Hylasoft.Opc.Ua
         .ToList();
 
       //add nodes to cache
-      _folderCache.Add(tag, nodes);
+      if (!_folderCache.ContainsKey(tag))
+        _folderCache.Add(tag, nodes);
       foreach (var node in nodes)
         AddNodeToCache(node);
 
