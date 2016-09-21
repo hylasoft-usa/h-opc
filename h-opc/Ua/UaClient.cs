@@ -300,6 +300,8 @@ namespace Hylasoft.Opc.Ua
       {
         PublishingInterval = _options.DefaultMonitorInterval,
         PublishingEnabled = true,
+        LifetimeCount = _options.SubscriptionLifetimeCount,
+        KeepAliveCount = _options.SubscriptionKeepAliveCount,
         DisplayName = tag,
         Priority = byte.MaxValue
       };
@@ -309,7 +311,7 @@ namespace Hylasoft.Opc.Ua
         StartNodeId = node.NodeId,
         AttributeId = Attributes.Value,
         DisplayName = tag,
-        SamplingInterval = _options.DefaultMonitorInterval,
+        SamplingInterval = _options.DefaultMonitorInterval
       };
       sub.AddItem(item);
       _session.AddSubscription(sub);
@@ -451,7 +453,17 @@ namespace Hylasoft.Opc.Ua
         else
           throw new OpcException(string.Format("Failed to validate certificate with error code {0}: {1}", eventArgs.Error.Code, eventArgs.Error.AdditionalInfo), eventArgs.Error.StatusCode);
       };
-
+      
+      /*
+      var traceConfiguration = new TraceConfiguration
+      {
+          OutputFilePath = @"c:\temp\opc-ua.log",
+          DeleteOnLoad = false,
+          TraceMasks = Utils.TraceMasks.Error
+      };
+      traceConfiguration.ApplySettings();
+      */
+      
       // Build the application configuration
       var appInstance = new ApplicationInstance
       {
@@ -463,6 +475,14 @@ namespace Hylasoft.Opc.Ua
           ApplicationName = _options.ApplicationName,
           ApplicationType = ApplicationType.Client,
           CertificateValidator = certificateValidator,
+          //TraceConfiguration = traceConfiguration,
+          ServerConfiguration = new ServerConfiguration
+          {
+              MaxSubscriptionCount = _options.MaxSubscriptionCount,
+              MaxMessageQueueSize = _options.MaxMessageQueueSize,
+              MaxNotificationQueueSize = _options.MaxNotificationQueueSize,
+              MaxPublishRequestCount = _options.MaxPublishRequestCount
+          },
           SecurityConfiguration = new SecurityConfiguration
           {
             AutoAcceptUntrustedCertificates = _options.AutoAcceptUntrustedCertificates
@@ -475,7 +495,7 @@ namespace Hylasoft.Opc.Ua
             MaxArrayLength = 65535,
             MaxMessageSize = 4194304,
             MaxBufferSize = 65535,
-            ChannelLifetime = 300000,
+            ChannelLifetime = 600000,
             SecurityTokenLifetime = 3600000
           },
           ClientConfiguration = new ClientConfiguration
