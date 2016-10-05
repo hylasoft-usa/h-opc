@@ -454,16 +454,6 @@ namespace Hylasoft.Opc.Ua
           throw new OpcException(string.Format("Failed to validate certificate with error code {0}: {1}", eventArgs.Error.Code, eventArgs.Error.AdditionalInfo), eventArgs.Error.StatusCode);
       };
       
-      /*
-      var traceConfiguration = new TraceConfiguration
-      {
-          OutputFilePath = @"c:\temp\opc-ua.log",
-          DeleteOnLoad = false,
-          TraceMasks = Utils.TraceMasks.Error
-      };
-      traceConfiguration.ApplySettings();
-      */
-      
       // Build the application configuration
       var appInstance = new ApplicationInstance
       {
@@ -475,7 +465,6 @@ namespace Hylasoft.Opc.Ua
           ApplicationName = _options.ApplicationName,
           ApplicationType = ApplicationType.Client,
           CertificateValidator = certificateValidator,
-          //TraceConfiguration = traceConfiguration,
           ServerConfiguration = new ServerConfiguration
           {
               MaxSubscriptionCount = _options.MaxSubscriptionCount,
