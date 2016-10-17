@@ -33,9 +33,9 @@ notifications:
 
 test_script:
 - ps: >-
-    choco install opcclassiccorecomponents -version 106.0.201 -y
+    choco install opcclassiccorecomponents -version 106.0.201.0 -y
 
-    choco install grayboxsimulator -version 1.8.0 -y
+    choco install grayboxsimulator -version 1.8.0.0 -y
 
     packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:"".\packages\NUnit.ConsoleRunner.3.4.1\tools\nunit3-console.exe""" "-targetargs:""tests\bin\$env:CONFIGURATION\tests.dll"" --x86" -output:opencoverCoverage.xml
 

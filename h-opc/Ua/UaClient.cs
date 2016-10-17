@@ -453,7 +453,6 @@ namespace Hylasoft.Opc.Ua
         else
           throw new OpcException(string.Format("Failed to validate certificate with error code {0}: {1}", eventArgs.Error.Code, eventArgs.Error.AdditionalInfo), eventArgs.Error.StatusCode);
       };
-      
       // Build the application configuration
       var appInstance = new ApplicationInstance
       {

@@ -7,7 +7,6 @@ using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Da;
 using NUnit.Framework;
 using OpcDa = Opc.Da;
-using Moq;
 using System.Threading.Tasks;
 
 namespace Hylasoft.Opc.Tests
