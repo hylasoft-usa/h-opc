@@ -262,5 +262,19 @@ namespace Hylasoft.Opc.Tests
       val = _client.Read<byte>(tag);
       Expect(val).ToBe(13);
     }
+    [Test]
+    public void DisposeWithoutException()
+    {
+      var nodes = _client.ExploreFolder("Data");
+      foreach (var node in nodes)
+      {
+        _client.Monitor<object>(node.Tag, (value, unsubscribe) =>
+        {
+          Console.WriteLine("{0}:={1}", node.Name, value);
+        });
+      }
+      Thread.Sleep(500);
+      _client.Dispose();
+    }
   }
 }
