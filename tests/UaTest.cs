@@ -276,5 +276,13 @@ namespace Hylasoft.Opc.Tests
       Thread.Sleep(500);
       _client.Dispose();
     }
+    [Test]
+    public void UaGetDataType()
+    {
+      var type = _client.GetDataType("Data.Dynamic.Scalar.Int32Value");
+      Assert.AreEqual(typeof(Int32), type);
+      type = _client.GetDataType("Data.Dynamic.Scalar.Int16Value");
+      Assert.AreEqual(typeof(Int16), type);
+    }
   }
 }

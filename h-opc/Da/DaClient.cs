@@ -37,6 +37,27 @@ namespace Hylasoft.Opc.Da
     }
 
     /// <summary>
+    /// Gets the datatype of an OPC tag
+    /// </summary>
+    /// <param name="tag">Tag to get datatype of</param>
+    /// <returns>System.Type</returns>
+    public System.Type GetDataType(string tag)
+    {
+      var item = new OpcDa.Item { ItemName = tag };
+      OpcDa.ItemProperty result;
+      try
+      {
+        var propertyCollection = _server.GetProperties(new [] {item}, new [] {new OpcDa.PropertyID(1)}, false)[0];
+        result = propertyCollection[0];
+      }
+      catch (NullReferenceException)
+      {
+        throw new OpcException("Could not find node because server not connected.");
+      }
+      return result.DataType;
+    }
+
+    /// <summary>
     /// OpcDa underlying server object.
     /// </summary>
     protected OpcDa.Server Server

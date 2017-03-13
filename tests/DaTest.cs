@@ -112,5 +112,11 @@ namespace Hylasoft.Opc.Tests
       var rootTags = _client.ExploreFolder(string.Empty);
       Assert.Greater(rootTags.Count(), 0);
     }
+    [Test]
+    public void DaGetDataType()
+    {
+      var type = _client.GetDataType(TestRegister);
+      Assert.AreEqual(typeof(Int16), type);
+    }
   }
 }
