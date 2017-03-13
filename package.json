@@ -8,7 +8,7 @@
     "grunt-dotnet-assembly-info": "^1.0.18",
     "grunt-msbuild": "^0.3.7",
     "grunt-mstest": "^0.1.5",
-    "grunt-nuget": "0.1.4",
+    "grunt-nuget": "0.1.5",
     "grunt-shell": "^1.3.0",
     "load-grunt-tasks": "^0.6.0",
     "time-grunt": "^1.0.0"
