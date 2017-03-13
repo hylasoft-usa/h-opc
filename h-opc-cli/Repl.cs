@@ -96,7 +96,42 @@ namespace Hylasoft.Opc.Cli
     {
       if (args.Count < 2)
         throw new BadCommandException();
-      _client.Write<object>(GenerateRelativeTag(args[0]), args[1]);
+      var tag = args[0];
+      var val = args[1];
+      var type = _client.GetDataType(GenerateRelativeTag(tag));
+      switch(type.Name) {
+        case "Int32":
+          var val32 = Convert.ToInt32(val);
+          _client.Write<int>(GenerateRelativeTag(tag), val32);
+          break;
+        case "Int16":
+          var val16 = Convert.ToInt16(val);
+          _client.Write<Int16>(GenerateRelativeTag(tag), val16);
+          break;
+        case "UInt16":
+          var valuint16 = Convert.ToUInt16(val);
+          _client.Write<UInt16>(GenerateRelativeTag(tag), valuint16);
+          break;
+        case "UInt32":
+          var valuint32 = Convert.ToUInt32(val);
+          _client.Write<UInt32>(GenerateRelativeTag(tag), valuint32);
+          break;
+        case "Boolean":
+          var valBool = Convert.ToBoolean(val);
+          _client.Write<Boolean>(GenerateRelativeTag(tag), valBool);
+          break;
+        case "Int64":
+          var val64 = Convert.ToInt64(val);
+          _client.Write<Int64>(GenerateRelativeTag(tag), val64);
+          break;
+        case "UInt64":
+          var valuint64 = Convert.ToUInt64(val);
+          _client.Write<UInt64>(GenerateRelativeTag(tag), valuint64);
+          break;
+        default:
+          _client.Write<object>(GenerateRelativeTag(tag), val);
+          break;
+      }
     }
 
     private void Monitor(IList<string> args)

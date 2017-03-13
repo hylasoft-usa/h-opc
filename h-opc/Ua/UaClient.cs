@@ -92,7 +92,7 @@ namespace Hylasoft.Opc.Ua
           results: out results,
           diagnosticInfos: out diag);
       var type = results[0].WrappedValue.TypeInfo.BuiltInType;
-      return System.Type.GetType("System." + Enum.GetName(typeof(TypeCode), type.GetTypeCode()));
+      return System.Type.GetType("System." + type.ToString());
     }
 
     private void SessionKeepAlive(Session session, KeepAliveEventArgs e)
