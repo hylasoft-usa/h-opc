@@ -78,7 +78,9 @@ module.exports = function(grunt) {
       restore: {
         src: '<%= srcPath %><%= solutionName %>',
         dest: 'packages/',
-				msbuildversion: 4
+				options: {
+					msbuildversion: 4
+				}
       }
     },
 
