@@ -33,7 +33,7 @@ notifications:
 
 test_script:
 - ps: >-
-    choco install opcclassiccorecomponents -version 106.0.201.2
+    choco install opc-components -version 106.0.201.2
 
     choco install grayboxsimulator -version 1.8.0.2
 
