@@ -77,10 +77,7 @@ module.exports = function(grunt) {
     nugetrestore: {
       restore: {
         src: '<%= srcPath %><%= solutionName %>',
-        dest: 'packages/',
-				options: {
-					msbuildversion: 12
-				}
+        dest: 'packages/'
       }
     },
 
@@ -93,8 +90,7 @@ module.exports = function(grunt) {
           version: '<%= pkg.version %>',
           basePath: '<%= projectName %>/bin/Release',
           includeReferencedProjects: true,
-          excludeEmptyDirectories: true,
-          verbose: true
+          excludeEmptyDirectories: true
         }
       }
     },
