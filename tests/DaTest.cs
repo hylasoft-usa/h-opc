@@ -116,7 +116,7 @@ namespace Hylasoft.Opc.Tests
     public void DaGetDataType()
     {
       var type = _client.GetDataType(TestRegister);
-      Assert.AreEqual(typeof(Int16), type);
+      Assert.AreEqual(typeof(short), type);
     }
   }
 }

@@ -40,14 +40,14 @@ namespace Hylasoft.Opc.Da
     /// Gets the datatype of an OPC tag
     /// </summary>
     /// <param name="tag">Tag to get datatype of</param>
-    /// <returns>System.Type</returns>
+    /// <returns>System Type</returns>
     public System.Type GetDataType(string tag)
     {
       var item = new OpcDa.Item { ItemName = tag };
       OpcDa.ItemProperty result;
       try
       {
-        var propertyCollection = _server.GetProperties(new [] {item}, new [] {new OpcDa.PropertyID(1)}, false)[0];
+        var propertyCollection = _server.GetProperties(new[] { item }, new[] { new OpcDa.PropertyID(1) }, false)[0];
         result = propertyCollection[0];
       }
       catch (NullReferenceException)
