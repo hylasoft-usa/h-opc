@@ -24,7 +24,7 @@ namespace Hylasoft.Opc.Common
     /// Gets the datatype of an OPC tag
     /// </summary>
     /// <param name="tag">Tag to get datatype of</param>
-    /// <returns>System.Type</returns>
+    /// <returns>System Type</returns>
     System.Type GetDataType(string tag);
 
     /// <summary>

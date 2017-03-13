@@ -280,9 +280,9 @@ namespace Hylasoft.Opc.Tests
     public void UaGetDataType()
     {
       var type = _client.GetDataType("Data.Dynamic.Scalar.Int32Value");
-      Assert.AreEqual(typeof(Int32), type);
+      Assert.AreEqual(typeof(short), type);
       type = _client.GetDataType("Data.Dynamic.Scalar.Int16Value");
-      Assert.AreEqual(typeof(Int16), type);
+      Assert.AreEqual(typeof(short), type);
     }
   }
 }

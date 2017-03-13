@@ -78,7 +78,7 @@ namespace Hylasoft.Opc.Ua
     /// Gets the datatype of an OPC tag
     /// </summary>
     /// <param name="tag">Tag to get datatype of</param>
-    /// <returns>System.Type</returns>
+    /// <returns>System Type</returns>
     public System.Type GetDataType(string tag)
     {
       var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
@@ -487,10 +487,10 @@ namespace Hylasoft.Opc.Ua
           CertificateValidator = certificateValidator,
           ServerConfiguration = new ServerConfiguration
           {
-              MaxSubscriptionCount = _options.MaxSubscriptionCount,
-              MaxMessageQueueSize = _options.MaxMessageQueueSize,
-              MaxNotificationQueueSize = _options.MaxNotificationQueueSize,
-              MaxPublishRequestCount = _options.MaxPublishRequestCount
+            MaxSubscriptionCount = _options.MaxSubscriptionCount,
+            MaxMessageQueueSize = _options.MaxMessageQueueSize,
+            MaxNotificationQueueSize = _options.MaxNotificationQueueSize,
+            MaxPublishRequestCount = _options.MaxPublishRequestCount
           },
           SecurityConfiguration = new SecurityConfiguration
           {
