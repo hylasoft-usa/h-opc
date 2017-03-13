@@ -77,7 +77,8 @@ module.exports = function(grunt) {
     nugetrestore: {
       restore: {
         src: '<%= srcPath %><%= solutionName %>',
-        dest: 'packages/'
+        dest: 'packages/',
+				msbuildversion: 4
       }
     },
 
