@@ -276,5 +276,11 @@ namespace Hylasoft.Opc.Tests
       Thread.Sleep(500);
       _client.Dispose();
     }
+    [Test]
+    public void UaGetDataType()
+    {
+      var type = _client.GetDataType("Data.Dynamic.Scalar.SByteValue");
+      Assert.AreEqual(typeof(int), type);
+    }
   }
 }

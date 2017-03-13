@@ -21,6 +21,13 @@ namespace Hylasoft.Opc.Common
     OpcStatus Status { get; }
 
     /// <summary>
+    /// Gets the datatype of an OPC tag
+    /// </summary>
+    /// <param name="tag">Tag to get datatype of</param>
+    /// <returns>System.Type</returns>
+    System.Type GetDataType(string tag);
+
+    /// <summary>
     /// Read a tag
     /// </summary>
     /// <typeparam name="T">The type of tag to read</typeparam>

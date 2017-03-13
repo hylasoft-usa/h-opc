@@ -74,6 +74,27 @@ namespace Hylasoft.Opc.Ua
       PostInitializeSession();
     }
 
+    /// <summary>
+    /// Gets the datatype of an OPC tag
+    /// </summary>
+    /// <param name="tag">Tag to get datatype of</param>
+    /// <returns>System.Type</returns>
+    public System.Type GetDataType(string tag)
+    {
+      var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
+      DataValueCollection results;
+      DiagnosticInfoCollection diag;
+      _session.Read(
+          requestHeader: null,
+          maxAge: 0,
+          timestampsToReturn: TimestampsToReturn.Neither,
+          nodesToRead: nodesToRead,
+          results: out results,
+          diagnosticInfos: out diag);
+      var type = results[0].WrappedValue.TypeInfo.BuiltInType;
+      return System.Type.GetType("System." + Enum.GetName(typeof(TypeCode), type.GetTypeCode()));
+    }
+
     private void SessionKeepAlive(Session session, KeepAliveEventArgs e)
     {
       if (e.CurrentState != ServerState.Running)
