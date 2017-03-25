@@ -22,11 +22,11 @@ An Opc Library and a command line to perform OPC operations with ease and transp
 
 ## Use
 
-A [nuget package](https://www.nuget.org/packages/H.Opc/) is available for the library. To install `Hylasoft.Opc`, run the following command in the Package Manager Console:
+A [nuget package](https://www.nuget.org/packages/H.Opc/) is available for the library. To install `H.Opc`, run the following command in the Package Manager Console:
 
     PM> Install-Package H.Opc
 
-*NOTE: Package was moved on NuGet.org from Hylasoft.Opc to H.Opc because of account issues*
+*NOTE: Package was moved on NuGet.org from Hylasoft.Opc to H.Opc because of NuGet account issues*
 
 To install the command line interface, head to the [`release section`](https://github.com/hylasoft-usa/h-opc/releases).
 
@@ -129,9 +129,12 @@ The repository uses [cs-boilerplate](https://github.com/hylasoft-usa/cs-boilerpl
 
 ### Unit Testing
 
-+ The unit tests rely on locally running test OPC servers. The ones used in this project are [OPC Foundation's Sample Server](https://opcfoundation.org/developer-tools/developer-kits-unified-architecture/sample-applications)
++ The unit tests rely on locally running simulator OPC servers. The ones used in this project are [OPC Foundation's Sample Server](https://opcfoundation.org/developer-tools/developer-kits-unified-architecture/sample-applications)
 and [Graybox Simulator](http://gray-box.net/download_graysim.php?lang=en)
+  + You must download OPC Foundation's Sample Server from the OPC Foundation website (link above), but GrayBox can be downloaded using [Chocolatey](https://chocolatey.org/)
+    + `choco install grayboxsimulator`
   + OPC Foundation's Sample Server requires you register with the website before you can download.
++ The tests use [NUnit](https://github.com/nunit/nunit). To run them in Visual Studio, install the [NUnit 3 Test Adapter](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnit3TestAdapter)
 
 #### UA
 + Open OPC Foundation's Sample Client (under Start -> OPC Foundation -> UA x.xx -> Sample Applications -> Opc.Ua.SampleClient.exe)
