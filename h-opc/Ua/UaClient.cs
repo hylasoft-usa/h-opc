@@ -467,7 +467,7 @@ namespace Hylasoft.Opc.Ua
     private UserIdentity GetIdentity(Uri url)
     {
        var uriLogin = new UserIdentity();
-       if (!String.IsNullOrEmpty(url.UserInfo))
+       if (!string.IsNullOrEmpty(url.UserInfo))
        {
            var uis = url.UserInfo.Split(':');
            uriLogin = new UserIdentity(uis[0], uis[1]);
