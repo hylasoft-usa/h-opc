@@ -460,6 +460,22 @@ namespace Hylasoft.Opc.Ua
     }
 
     /// <summary>
+    /// Return identity login object for a given URI.
+    /// </summary>
+    /// <param name="url">Login URI</param>
+    /// <returns>AnonUser or User with name and password</returns>
+    private UserIdentity GetIdentity(Uri url)
+    {
+       var uriLogin = new UserIdentity();
+       if (!string.IsNullOrEmpty(url.UserInfo))
+       {
+           var uis = url.UserInfo.Split(':');
+           uriLogin = new UserIdentity(uis[0], uis[1]);
+       }
+       return uriLogin;
+    }
+
+    /// <summary>
     /// Crappy method to initialize the session. I don't know what many of these things do, sincerely.
     /// </summary>
     private Session InitializeSession(Uri url)
@@ -534,7 +550,7 @@ namespace Hylasoft.Opc.Ua
           checkDomain: false,
           sessionName: _options.SessionName,
           sessionTimeout: _options.SessionTimeout,
-          identity: null,
+          identity: GetIdentity(url),
           preferredLocales: new string[] { });
 
       return session;
