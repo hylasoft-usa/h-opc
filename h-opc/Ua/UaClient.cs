@@ -577,9 +577,13 @@ namespace Hylasoft.Opc.Ua
         throw new OpcException(string.Format("The tag \"{0}\" doesn't exist on folder \"{1}\"", head, node.Tag), ex);
       }
 
-      return folders.Length == 1
+      // remove an array element by converting it to a list
+      var folderList = folders.ToList();
+      folderList.RemoveAt(0); // remove the first node
+      folders = folderList.ToArray();
+      return folders.Length == 0
         ? found // last node, return it
-        : FindNode(string.Join(".", folders.Except(new[] { head })), found); // find sub nodes
+        : FindNode(string.Join(".", folders), found); // find sub nodes
     }
 
 
