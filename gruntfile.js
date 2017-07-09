@@ -33,7 +33,6 @@ module.exports = function(grunt) {
           fileVersion: '<%= pkg.version %>',
           company: 'hylasoft',
           copyright: ' ',
-          version: 12,
           product: '<%= projectName %>'
         }
       }
@@ -58,6 +57,7 @@ module.exports = function(grunt) {
           projectConfiguration: 'Debug',
           platform: '<%= platform %>',
           targets: ['Clean', 'Rebuild'],
+          version: 12,
           buildParameters: {
             StyleCopEnabled: true,
             StyleCopTreatErrorsAsWarnings: false,
