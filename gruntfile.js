@@ -45,7 +45,7 @@ module.exports = function(grunt) {
           projectConfiguration: 'Release',
           platform: '<%= platform %>',
           targets: ['Clean', 'Rebuild'],
-          version: 12,
+          version: 4.0,
           buildParameters: {
             StyleCopEnabled: false
           }
@@ -57,7 +57,7 @@ module.exports = function(grunt) {
           projectConfiguration: 'Debug',
           platform: '<%= platform %>',
           targets: ['Clean', 'Rebuild'],
-          version: 12,
+          version: 4.0,
           buildParameters: {
             StyleCopEnabled: true,
             StyleCopTreatErrorsAsWarnings: false,

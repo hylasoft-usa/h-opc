@@ -193,3 +193,5 @@ opencoverCoverage.xml
 
 # NUnit
 results.xml
+
+package-lock.json
