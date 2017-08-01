@@ -37,15 +37,29 @@ to use the UA Client simply...
 ````cs
 using (var client = new UaClient(new Uri("opc.tcp://host-url")))
 {
+  client.Connect();
   // Use `client` here
 }
 ````
+
+or with options...
+
+````cs
+var options = new Opc.Ua.UserIdentity("<your-username>", "<your-password>");
+using (var client = new UaClient(new Uri("opc.tcp://host-url")), options)
+{
+  client.Connect();
+  // Use `client` here
+}
+````
+
 
 and to use the DA Client instead:
 
 ````cs
 using (var client = new DaClient(new Uri("opcda://host-url")))
 {
+  client.Connect();
   // Use `client` here
 }
 ````
