@@ -33,6 +33,17 @@ namespace Hylasoft.Opc.Ua
       Status = OpcStatus.NotConnected;
     }
 
+    /// <summary>
+    /// Creates a server object
+    /// </summary>
+    /// <param name="serverUrl">the url of the server to connect to</param>
+    /// <param name="options">custom options to use with ua client</param>
+    public UaClient(Uri serverUrl, UaClientOptions options)
+    {
+      _serverUrl = serverUrl;
+      _options = options;
+      Status = OpcStatus.NotConnected;
+    }
 
     /// <summary>
     /// Options to configure the UA client session
@@ -466,13 +477,17 @@ namespace Hylasoft.Opc.Ua
     /// <returns>AnonUser or User with name and password</returns>
     private UserIdentity GetIdentity(Uri url)
     {
-       var uriLogin = new UserIdentity();
-       if (!string.IsNullOrEmpty(url.UserInfo))
-       {
-           var uis = url.UserInfo.Split(':');
-           uriLogin = new UserIdentity(uis[0], uis[1]);
-       }
-       return uriLogin;
+      if (_options.UserIdentity != null)
+      {
+        return _options.UserIdentity;
+      }
+      var uriLogin = new UserIdentity();
+      if (!string.IsNullOrEmpty(url.UserInfo))
+      {
+        var uis = url.UserInfo.Split(':');
+        uriLogin = new UserIdentity(uis[0], uis[1]);
+      }
+      return uriLogin;
     }
 
     /// <summary>

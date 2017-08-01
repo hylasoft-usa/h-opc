@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
+using OpcUa = Opc.Ua;
 
 namespace Hylasoft.Opc.Ua
 {
@@ -90,6 +91,11 @@ namespace Hylasoft.Opc.Ua
     /// Gets or sets the max publish request count.
     /// </summary>
     public int MaxPublishRequestCount { get; set; }
+
+    /// <summary>
+    /// The identity to connect to the OPC server as
+    /// </summary>
+    public OpcUa.UserIdentity UserIdentity { get; set; }
 
     internal UaClientOptions()
     {
