@@ -323,8 +323,8 @@ namespace Hylasoft.Opc.Ua
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
     /// <param name="callback">the callback to execute when the value is changed.
-    /// The first parameter is the new value of the node, the second is an `unsubscribe` function to unsubscribe the callback</param>
-    public void Monitor<T>(string tag, Action<T, Action> callback)
+    /// The first parameter is a MonitorEvent object which represents the data point, the second is an `unsubscribe` function to unsubscribe the callback</param>
+    public void Monitor<T>(string tag, Action<MonitorEvent<T>, Action> callback)
     {
       var node = FindNode(tag);
 
@@ -361,7 +361,14 @@ namespace Hylasoft.Opc.Ua
           _session.RemoveSubscription(sub);
           sub.Dispose();
         };
-        callback((T)t, unsubscribe);
+
+        var monitorEvent = new MonitorEvent<T>();
+        monitorEvent.Value = (T)t;
+        monitorEvent.SourceTimestamp = p.Value.SourceTimestamp;
+        monitorEvent.ServerTimestamp = p.Value.ServerTimestamp;
+        if (StatusCode.IsGood(p.Value.StatusCode)) monitorEvent.Quality = Quality.Good;
+        if (StatusCode.IsBad(p.Value.StatusCode)) monitorEvent.Quality = Quality.Bad;
+        callback(monitorEvent, unsubscribe);
       };
     }
 
