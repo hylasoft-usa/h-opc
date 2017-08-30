@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ClientExtensions.cs" />
-    <Compile Include="Common\MonitorEvent.cs" />
+    <Compile Include="Common\ReadEvent.cs" />
     <Compile Include="Common\Node.cs" />
     <Compile Include="Common\IClient.cs" />
     <Compile Include="Common\OpcException.cs" />

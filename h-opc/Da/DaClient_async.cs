@@ -12,7 +12,7 @@ namespace Hylasoft.Opc.Da
     /// <summary>
     /// Read a tag asynchronusly
     /// </summary>
-    public async Task<T> ReadAsync<T>(string tag)
+    public async Task<ReadEvent<T>> ReadAsync<T>(string tag)
     {
       return await Task.Run(() => Read<T>(tag));
     }

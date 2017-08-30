@@ -11,7 +11,7 @@ namespace Hylasoft.Opc.Common
   /// Base class representing a monitor event on the OPC server
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public class MonitorEvent<T>
+  public class ReadEvent<T>
   {
     /// <summary>
     /// Gets the value that was read from the server

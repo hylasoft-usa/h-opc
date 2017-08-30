@@ -49,7 +49,7 @@ namespace Hylasoft.Opc.Tests
     public void ReadNodeTest()
     {
       var val = _client.Read<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
-      Expect(val).ToBe("OPC Foundation");
+      Expect(val.Value).ToBe("OPC Foundation");
     }
 
     [Test]
@@ -59,11 +59,11 @@ namespace Hylasoft.Opc.Tests
 
       _client.Write(tag, (byte)3);
       var val = _client.Read<byte>(tag);
-      Expect(val).ToBe(3);
+      Expect(val.Value).ToBe(3);
 
       _client.Write(tag, (byte)13);
       val = _client.Read<byte>(tag);
-      Expect(val).ToBe(13);
+      Expect(val.Value).ToBe(13);
     }
 
 
@@ -71,7 +71,7 @@ namespace Hylasoft.Opc.Tests
     public void ReadArrayNodeTest()
     {
       var val = _client.Read<bool[]>("Data.Static.Array.BooleanValue");
-      Expect(val.Length).ToBeGreaterThan(0);
+      Expect(val.Value.Length).ToBeGreaterThan(0);
     }
 
     [Test]
@@ -84,11 +84,11 @@ namespace Hylasoft.Opc.Tests
 
       _client.Write(tag, val1);
       var val = _client.Read<bool[]>(tag);
-      Expect(val.Zip(val1, (a, b) => a == b)).ToNotContain(false);
+      Expect(val.Value.Zip(val1, (a, b) => a == b)).ToNotContain(false);
 
       _client.Write(tag, val2);
       val = _client.Read<bool[]>(tag);
-      Expect(val.Zip(val2, (a, b) => a == b)).ToNotContain(false);
+      Expect(val.Value.Zip(val2, (a, b) => a == b)).ToNotContain(false);
     }
 
     [Test]
@@ -115,8 +115,7 @@ namespace Hylasoft.Opc.Tests
         .ToThrowException<OpcException>();
 
       // fails for not readable tag
-      Expect<Action>(() => _client.Read<string>("Server"))
-        .ToThrowException<OpcException>();
+      Expect(_client.Read<string>("Server").Quality).ToBe(Quality.Bad);
     }
 
     [Test]
@@ -236,7 +235,7 @@ namespace Hylasoft.Opc.Tests
     {
       var task = _client.ReadAsync<string>("Server.ServerStatus.BuildInfo.ManufacturerName");
       task.Wait();
-      Expect(task.Result).ToBe("OPC Foundation");
+      Expect(task.Result.Value).ToBe("OPC Foundation");
     }
 
     [Test]
@@ -255,12 +254,12 @@ namespace Hylasoft.Opc.Tests
       Thread.Sleep(200);
       Assert.AreEqual(1, i);
       var val = _client.Read<byte>(tag);
-      Expect(val).ToBe(3);
+      Expect(val.Value).ToBe(3);
 
       task = _client.WriteAsync(tag, (byte)13);
       task.Wait();
       val = _client.Read<byte>(tag);
-      Expect(val).ToBe(13);
+      Expect(val.Value).ToBe(13);
     }
     [Test]
     public void DisposeWithoutException()

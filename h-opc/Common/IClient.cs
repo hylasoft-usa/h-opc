@@ -34,7 +34,7 @@ namespace Hylasoft.Opc.Common
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
     /// <returns>The value retrieved from the OPC</returns>
-    T Read<T>(string tag);
+    ReadEvent<T> Read<T>(string tag);
 
     /// <summary>
     /// Write a value on the specified opc tag
@@ -53,7 +53,7 @@ namespace Hylasoft.Opc.Common
     /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
     /// <param name="callback">the callback to execute when the value is changed.
     /// The first parameter is the new value of the node, the second is an `unsubscribe` function to unsubscribe the callback</param>
-    void Monitor<T>(string tag, Action<MonitorEvent<T>, Action> callback);
+    void Monitor<T>(string tag, Action<ReadEvent<T>, Action> callback);
 
     /// <summary>
     /// Finds a node on the Opc Server
@@ -79,7 +79,7 @@ namespace Hylasoft.Opc.Common
     /// <summary>
     /// Read a tag asynchronusly
     /// </summary>
-    Task<T> ReadAsync<T>(string tag);
+    Task<ReadEvent<T>> ReadAsync<T>(string tag);
 
     /// <summary>
     /// Write a value on the specified opc tag asynchronously

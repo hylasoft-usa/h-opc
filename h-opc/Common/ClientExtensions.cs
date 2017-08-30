@@ -1,4 +1,6 @@
-﻿namespace Hylasoft.Opc.Common
+﻿using System;
+
+namespace Hylasoft.Opc.Common
 {
   /// <summary>
   /// Useful extension methods for OPC Clients
@@ -12,7 +14,7 @@
     /// <param name="tag">The fully qualified identifier of the tag</param>
     /// <param name="defaultValue">the default value to read if the read fails</param>
     /// <returns></returns>
-    public static T ReadOrdefault<T>(this IClient<Node> client, string tag, T defaultValue = default(T))
+    public static ReadEvent<T> ReadOrdefault<T>(this IClient<Node> client, string tag, T defaultValue = default(T))
     {
       try
       {
@@ -20,7 +22,12 @@
       }
       catch (OpcException)
       {
-        return defaultValue;
+        var readEvent = new ReadEvent<T>();
+        readEvent.Quality = Quality.Good;
+        readEvent.Value = defaultValue;
+        readEvent.SourceTimestamp = DateTime.Now;
+        readEvent.ServerTimestamp = DateTime.Now;
+        return readEvent;
       }
     }
   }

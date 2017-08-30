@@ -105,7 +105,7 @@ namespace Hylasoft.Opc.Da
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
     /// <returns>The value retrieved from the OPC</returns>
-    public T Read<T>(string tag)
+    public ReadEvent<T> Read<T>(string tag)
     {
       var item = new OpcDa.Item { ItemName = tag };
       if (Status == OpcStatus.NotConnected)
@@ -113,10 +113,17 @@ namespace Hylasoft.Opc.Da
         throw new OpcException("Server not connected. Cannot read tag.");
       }
       var result = _server.Read(new[] { item })[0];
-      CheckResult(result, tag);
       T casted;
       TryCastResult(result.Value, out casted);
-      return casted;
+
+      var readEvent = new ReadEvent<T>();
+      readEvent.Value = casted;
+      readEvent.SourceTimestamp = result.Timestamp;
+      readEvent.ServerTimestamp = result.Timestamp;
+      if (result.Quality == OpcDa.Quality.Good) readEvent.Quality = Quality.Good;
+      if (result.Quality == OpcDa.Quality.Bad) readEvent.Quality = Quality.Bad;
+
+      return readEvent;
     }
 
     /// <summary>
@@ -166,7 +173,7 @@ namespace Hylasoft.Opc.Da
     /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
     /// <param name="callback">the callback to execute when the value is changed.
     /// The first parameter is a MonitorEvent object which represents the data point, the second is an `unsubscribe` function to unsubscribe the callback</param>
-    public void Monitor<T>(string tag, Action<MonitorEvent<T>, Action> callback)
+    public void Monitor<T>(string tag, Action<ReadEvent<T>, Action> callback)
     {
       var subItem = new OpcDa.SubscriptionState
       {
@@ -185,7 +192,7 @@ namespace Hylasoft.Opc.Da
       {
         T casted;
         TryCastResult(values[0].Value, out casted);
-        var monitorEvent = new MonitorEvent<T>();
+        var monitorEvent = new ReadEvent<T>();
         monitorEvent.Value = casted;
         monitorEvent.SourceTimestamp = values[0].Timestamp;
         monitorEvent.ServerTimestamp = values[0].Timestamp;
