@@ -12,11 +12,13 @@ namespace Hylasoft.Opc.Common
     /// </summary>
     [Description("Unknown")]
     Unknown,
+
     /// <summary>
     /// Quality: Good
     /// </summary>
     [Description("Good")]
     Good,
+
     /// <summary>
     /// Quality: Bad
     /// </summary>
