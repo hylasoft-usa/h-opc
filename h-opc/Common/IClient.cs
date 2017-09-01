@@ -53,6 +53,7 @@ namespace Hylasoft.Opc.Common
     /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
     /// <param name="callback">the callback to execute when the value is changed.
     /// The first parameter is the new value of the node, the second is an `unsubscribe` function to unsubscribe the callback</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an async method.")]
     void Monitor<T>(string tag, Action<ReadEvent<T>, Action> callback);
 
     /// <summary>
@@ -79,6 +80,7 @@ namespace Hylasoft.Opc.Common
     /// <summary>
     /// Read a tag asynchronusly
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is an async method.")]
     Task<ReadEvent<T>> ReadAsync<T>(string tag);
 
     /// <summary>
