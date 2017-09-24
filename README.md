@@ -1,4 +1,4 @@
-h-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip?svg=true)](https://ci.appveyor.com/project/Hyla-Soft-Inc/h-opc) [![NuGet Status](http://img.shields.io/nuget/v/H.Opc.svg)](https://www.nuget.org/packages/H.Opc) [![Coverage Status](https://coveralls.io/repos/github/jmbeach/h-opc/badge.svg?branch=master)](https://coveralls.io/github/jmbeach/h-opc?branch=master)
+bajcmartinez:add-quality-and-timestamp-on-monitor-suscriptionsh-opc [![Build status](https://ci.appveyor.com/api/projects/status/oajkgccisoe98gip?svg=true)](https://ci.appveyor.com/project/Hyla-Soft-Inc/h-opc) [![NuGet Status](http://img.shields.io/nuget/v/H.Opc.svg)](https://www.nuget.org/packages/H.Opc) [![Coverage Status](https://coveralls.io/repos/github/jmbeach/h-opc/badge.svg?branch=master)](https://coveralls.io/github/jmbeach/h-opc?branch=master)
 ==============
 
 An Opc Library and a command line to perform OPC operations with ease and transparency among different protocols. Currently supports synchronous operation over UA and DA protocols.
@@ -111,8 +111,6 @@ Dead-simple monitoring:
 ````cs
 client.Monitor<string>("path.to.string", (readEvent, unsubscribe) =>
 {
-  DoSomethingWithQuality(readEvent.Quality);
-  DoSomethingWithTimestamp(readEvent.SourceTimestamp);
   DoSomethingWithYourValue(readEvent.Value);
   if(ThatsEnough == true)
     unsubscribe();
