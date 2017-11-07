@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Hylasoft.Opc.Common;
 using Opc;
+using Opc.Ua;
 using Factory = OpcCom.Factory;
 using OpcDa = Opc.Da;
 
@@ -104,7 +105,7 @@ namespace Hylasoft.Opc.Da
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
     /// <returns>The value retrieved from the OPC</returns>
-    public T Read<T>(string tag)
+    public ReadEvent<T> Read<T>(string tag)
     {
       var item = new OpcDa.Item { ItemName = tag };
       if (Status == OpcStatus.NotConnected)
@@ -112,10 +113,17 @@ namespace Hylasoft.Opc.Da
         throw new OpcException("Server not connected. Cannot read tag.");
       }
       var result = _server.Read(new[] { item })[0];
-      CheckResult(result, tag);
       T casted;
       TryCastResult(result.Value, out casted);
-      return casted;
+
+      var readEvent = new ReadEvent<T>();
+      readEvent.Value = casted;
+      readEvent.SourceTimestamp = result.Timestamp;
+      readEvent.ServerTimestamp = result.Timestamp;
+      if (result.Quality == OpcDa.Quality.Good) readEvent.Quality = Quality.Good;
+      if (result.Quality == OpcDa.Quality.Bad) readEvent.Quality = Quality.Bad;
+
+      return readEvent;
     }
 
     /// <summary>
@@ -164,8 +172,8 @@ namespace Hylasoft.Opc.Da
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
     /// <param name="callback">the callback to execute when the value is changed.
-    /// The first parameter is the new value of the node, the second is an `unsubscribe` function to unsubscribe the callback</param>
-    public void Monitor<T>(string tag, Action<T, Action> callback)
+    /// The first parameter is a MonitorEvent object which represents the data point, the second is an `unsubscribe` function to unsubscribe the callback</param>
+    public void Monitor<T>(string tag, Action<ReadEvent<T>, Action> callback)
     {
       var subItem = new OpcDa.SubscriptionState
       {
@@ -184,7 +192,13 @@ namespace Hylasoft.Opc.Da
       {
         T casted;
         TryCastResult(values[0].Value, out casted);
-        callback(casted, unsubscribe);
+        var monitorEvent = new ReadEvent<T>();
+        monitorEvent.Value = casted;
+        monitorEvent.SourceTimestamp = values[0].Timestamp;
+        monitorEvent.ServerTimestamp = values[0].Timestamp;
+        if (values[0].Quality == OpcDa.Quality.Good) monitorEvent.Quality = Quality.Good;
+        if (values[0].Quality == OpcDa.Quality.Bad) monitorEvent.Quality = Quality.Bad;
+        callback(monitorEvent, unsubscribe);
       };
       sub.AddItems(new[] { new OpcDa.Item { ItemName = tag } });
       sub.SetEnabled(true);

@@ -46,14 +46,14 @@ namespace Hylasoft.Opc.Tests
     public void DaReadDouble()
     {
       var val = _client.Read<double>(TestRegister);
-      Expect(val).ToBe(4);
+      Expect(val.Value).ToBe(4);
     }
     [Test]
     public void DaReadAsyncDouble()
     {
       var task = _client.ReadAsync<double>(TestRegister);
       task.Wait();
-      Expect(task.Result).ToBe(4);
+      Expect(task.Result.Value).ToBe(4);
       task = _client.ReadAsync<double>(TestRegister);
       // didn't wait
       Expect(task.IsCompleted).ToBe(false);

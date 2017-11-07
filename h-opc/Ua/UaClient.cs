@@ -178,7 +178,7 @@ namespace Hylasoft.Opc.Ua
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
     /// <returns>The value retrieved from the OPC</returns>
-    public T Read<T>(string tag)
+    public ReadEvent<T> Read<T>(string tag)
     {
       var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
       DataValueCollection results;
@@ -192,8 +192,13 @@ namespace Hylasoft.Opc.Ua
           diagnosticInfos: out diag);
       var val = results[0];
 
-      CheckReturnValue(val.StatusCode);
-      return (T)val.Value;
+      var readEvent = new ReadEvent<T>();
+      readEvent.Value = (T)val.Value;
+      readEvent.SourceTimestamp = val.SourceTimestamp;
+      readEvent.ServerTimestamp = val.ServerTimestamp;
+      if (StatusCode.IsGood(val.StatusCode)) readEvent.Quality = Quality.Good;
+      if (StatusCode.IsBad(val.StatusCode)) readEvent.Quality = Quality.Bad;
+      return readEvent;
     }
 
 
@@ -204,12 +209,12 @@ namespace Hylasoft.Opc.Ua
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` reads the tag `bar` on the folder `foo`</param>
     /// <returns>The value retrieved from the OPC</returns>
-    public Task<T> ReadAsync<T>(string tag)
+    public Task<ReadEvent<T>> ReadAsync<T>(string tag)
     {
       var nodesToRead = BuildReadValueIdCollection(tag, Attributes.Value);
 
       // Wrap the ReadAsync logic in a TaskCompletionSource, so we can use C# async/await syntax to call it:
-      var taskCompletionSource = new TaskCompletionSource<T>();
+      var taskCompletionSource = new TaskCompletionSource<ReadEvent<T>>();
       _session.BeginRead(
           requestHeader: null,
           maxAge: 0,
@@ -227,9 +232,14 @@ namespace Hylasoft.Opc.Ua
             try
             {
               CheckReturnValue(response.ServiceResult);
-              CheckReturnValue(results[0].StatusCode);
               var val = results[0];
-              taskCompletionSource.TrySetResult((T)val.Value);
+              var readEvent = new ReadEvent<T>();
+              readEvent.Value = (T)val.Value;
+              readEvent.SourceTimestamp = val.SourceTimestamp;
+              readEvent.ServerTimestamp = val.ServerTimestamp;
+              if (StatusCode.IsGood(val.StatusCode)) readEvent.Quality = Quality.Good;
+              if (StatusCode.IsBad(val.StatusCode)) readEvent.Quality = Quality.Bad;
+              taskCompletionSource.TrySetResult(readEvent);
             }
             catch (Exception ex)
             {
@@ -323,8 +333,8 @@ namespace Hylasoft.Opc.Ua
     /// <param name="tag">The fully-qualified identifier of the tag. You can specify a subfolder by using a comma delimited name.
     /// E.g: the tag `foo.bar` monitors the tag `bar` on the folder `foo`</param>
     /// <param name="callback">the callback to execute when the value is changed.
-    /// The first parameter is the new value of the node, the second is an `unsubscribe` function to unsubscribe the callback</param>
-    public void Monitor<T>(string tag, Action<T, Action> callback)
+    /// The first parameter is a MonitorEvent object which represents the data point, the second is an `unsubscribe` function to unsubscribe the callback</param>
+    public void Monitor<T>(string tag, Action<ReadEvent<T>, Action> callback)
     {
       var node = FindNode(tag);
 
@@ -361,7 +371,14 @@ namespace Hylasoft.Opc.Ua
           _session.RemoveSubscription(sub);
           sub.Dispose();
         };
-        callback((T)t, unsubscribe);
+
+        var monitorEvent = new ReadEvent<T>();
+        monitorEvent.Value = (T)t;
+        monitorEvent.SourceTimestamp = p.Value.SourceTimestamp;
+        monitorEvent.ServerTimestamp = p.Value.ServerTimestamp;
+        if (StatusCode.IsGood(p.Value.StatusCode)) monitorEvent.Quality = Quality.Good;
+        if (StatusCode.IsBad(p.Value.StatusCode)) monitorEvent.Quality = Quality.Bad;
+        callback(monitorEvent, unsubscribe);
       };
     }
 

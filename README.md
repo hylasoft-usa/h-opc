@@ -89,8 +89,8 @@ IENumerable<Node> grandChildren = children.SelectMany(m => client.ExploreFolder(
 Reading a variable? As simple as...
 
 ````cs
-var myString = client.Read<string>("path.to.string");
-var myInt = client.Read<int>("path.to.num");
+var myString = client.Read<string>("path.to.string").Value;
+var myInt = client.Read<int>("path.to.num").Value;
 ````
 
 The example above will read a string from the tags `string` and `num` in the folder `path.to`
@@ -109,9 +109,9 @@ client.Write("path.to.num", 42);
 Dead-simple monitoring:
 
 ````cs
-client.Monitor<string>("path.to.string", (newValue, unsubscribe) =>
+client.Monitor<string>("path.to.string", (readEvent, unsubscribe) =>
 {
-  DoSomethingWithYourValue(newValue);
+  DoSomethingWithYourValue(readEvent.Value);
   if(ThatsEnough == true)
     unsubscribe();
 });
@@ -120,7 +120,7 @@ client.Monitor<string>("path.to.string", (newValue, unsubscribe) =>
 
 The second parameter is an `Action<T, Action>` that has two parameter:
 
-- `newValue` is the new value of the tag
+- `readEvent` contains all the information relevant to the event such as timestamps, quality and the value
 - `unsubscribe` is a function that unsubscribes the current monitored item. It's very handy when you want to terminate your callback
 
 it's **important** that you either enclose the client into a `using` statement or call `Dispose()` when you are finished, to unsubscribe all the monitored items and terminate the connection!
