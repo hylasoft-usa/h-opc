@@ -97,7 +97,9 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public OpcUa.UserIdentity UserIdentity { get; set; }
 
-    internal UaClientOptions()
+    public UaClientOptions(){ this.Init(); }
+    
+    private void Init()
     {
       // Initialize default values:
       ApplicationName = "h-opc-client";
