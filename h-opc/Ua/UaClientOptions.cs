@@ -97,8 +97,14 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public OpcUa.UserIdentity UserIdentity { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UaClientOptions"/> class.
+    /// </summary>
     public UaClientOptions(){ this.Init(); }
     
+    /// <summary>
+    /// Initialize default values for the UaClientOptions class.
+    /// </summary>
     private void Init()
     {
       // Initialize default values:
