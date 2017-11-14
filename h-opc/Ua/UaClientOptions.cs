@@ -100,7 +100,10 @@ namespace Hylasoft.Opc.Ua
     /// <summary>
     /// Initializes a new instance of the <see cref="UaClientOptions"/> class.
     /// </summary>
-    public UaClientOptions(){ this.Init(); }
+    public UaClientOptions()
+    { 
+      this.Init();
+    }
     
     /// <summary>
     /// Initialize default values for the UaClientOptions class.
