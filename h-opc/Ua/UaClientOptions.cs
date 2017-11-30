@@ -97,6 +97,9 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public OpcUa.UserIdentity UserIdentity { get; set; }
 
+    /// <summary>
+    /// Creates a client options object
+    /// </summary>
     public UaClientOptions()
     {
       // Initialize default values:
