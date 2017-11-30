@@ -97,7 +97,10 @@ namespace Hylasoft.Opc.Ua
     /// </summary>
     public OpcUa.UserIdentity UserIdentity { get; set; }
 
-    internal UaClientOptions()
+    /// <summary>
+    /// Creates a client options object
+    /// </summary>
+    public UaClientOptions()
     {
       // Initialize default values:
       ApplicationName = "h-opc-client";
