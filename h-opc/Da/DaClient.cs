@@ -43,7 +43,7 @@ namespace Hylasoft.Opc.Da
     /// Initialize a new Data Access Client
     /// </summary>
     /// <param name="serverUrl">the url of the server to connect to</param>
-    [SuppressMessage("Microsoft.Design", "CA1057")]
+    [SuppressMessage("Microsoft.Design", "CA1057", Justification = "A Uri object incorrectly encodes spaces in Urls so a string must be used instead")]
     public DaClient(string serverUrl)
     {
       _url = new URL(serverUrl);
