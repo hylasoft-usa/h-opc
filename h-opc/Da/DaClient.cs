@@ -27,7 +27,8 @@ namespace Hylasoft.Opc.Da
     /// <summary>
     /// Initialize a new Data Access Client
     /// </summary>
-    /// <param name="serverUrl">the url of the server to connect to</param>
+    /// <param name="serverUrl">the url of the server to connect to. WARNING: If server URL includes
+    /// spaces (ex. "RSLinx OPC Server") then pass the server URL in to the constructor as a string instead</param>
     public DaClient(Uri serverUrl)
     {
       _url = new URL(serverUrl.AbsolutePath)
@@ -35,6 +36,15 @@ namespace Hylasoft.Opc.Da
         Scheme = serverUrl.Scheme,
         HostName = serverUrl.Host
       };
+    }
+
+    /// <summary>
+    /// Initialize a new Data Access Client
+    /// </summary>
+    /// <param name="serverUrl">the url of the server to connect to</param>
+    public DaClient(string serverUrl)
+    {
+      _url = new URL(serverUrl);
     }
 
     /// <summary>
