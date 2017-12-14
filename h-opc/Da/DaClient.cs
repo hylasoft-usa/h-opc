@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -42,6 +43,7 @@ namespace Hylasoft.Opc.Da
     /// Initialize a new Data Access Client
     /// </summary>
     /// <param name="serverUrl">the url of the server to connect to</param>
+    [SuppressMessage("Microsoft.Design", "CA1057")]
     public DaClient(string serverUrl)
     {
       _url = new URL(serverUrl);
