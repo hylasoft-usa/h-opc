@@ -43,7 +43,7 @@ namespace Hylasoft.Opc.Da
     /// <summary>
     /// Initialize a new Data Access Client
     /// </summary>
-    /// <param name="serverUrl">the url of the server to connect to</param>
+    /// <param name="serverUrl">The url of the server to connect to</param>
     public DaClient(URL serverUrl)
     {
       _url = serverUrl;
