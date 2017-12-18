@@ -28,8 +28,9 @@ namespace Hylasoft.Opc.Da
     /// <summary>
     /// Initialize a new Data Access Client
     /// </summary>
-    /// <param name="serverUrl">the url of the server to connect to. WARNING: If server URL includes
-    /// spaces (ex. "RSLinx OPC Server") then pass the server URL in to the constructor as a string instead</param>
+    /// <param name="serverUrl">The url of the server to connect to. WARNING: If server URL includes
+    /// spaces (ex. "RSLinx OPC Server") then pass the server URL in to the constructor as an Opc.URL object
+    /// directly instead.</param>
     public DaClient(Uri serverUrl)
     {
       _url = new URL(serverUrl.AbsolutePath)
@@ -43,10 +44,9 @@ namespace Hylasoft.Opc.Da
     /// Initialize a new Data Access Client
     /// </summary>
     /// <param name="serverUrl">the url of the server to connect to</param>
-    [SuppressMessage("Microsoft.Design", "CA1057", Justification = "A Uri object incorrectly encodes spaces in Urls so a string must be used instead")]
-    public DaClient(string serverUrl)
+    public DaClient(URL serverUrl)
     {
-      _url = new URL(serverUrl);
+      _url = serverUrl;
     }
 
     /// <summary>
