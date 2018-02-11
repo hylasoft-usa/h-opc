@@ -13,3 +13,5 @@ To configure the test project, ensure that there is an App.config file in the pr
   </appSettings>
 </configuration>
 ```
+
+Run the `configure.ps1` script in the root h-opc directory to generate the app.config interactively
