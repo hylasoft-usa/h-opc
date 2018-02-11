@@ -21,7 +21,6 @@ install:
 build_script:
   - node --version
   - npm --version
-  - grunt build --no-color
   - ps: >-
       $testConfig = @'
       <?xml version="1.0" encoding="utf-8" ?>
@@ -33,6 +32,7 @@ build_script:
       '@
 
       $testConfig | Out-File "tests\App.config" -Encoding ascii
+  - grunt build --no-color
 
 
 test: off # tests are done in the build script
