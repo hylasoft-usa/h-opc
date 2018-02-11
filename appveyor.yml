@@ -27,7 +27,7 @@ build_script:
       <?xml version="1.0" encoding="utf-8" ?>
       <configuration>
         <appSettings>
-          <add key="UATestEndpoint" value="opc.tcp://localhost:61210/UA/SampleServer"/>
+          <add key="UATestEndpoint" value="opc.tcp://localhost:51210/UA/SampleServer"/>
         </appSettings>
       </configuration>
 
