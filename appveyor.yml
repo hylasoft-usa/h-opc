@@ -33,6 +33,17 @@ notifications:
 
 test_script:
 - ps: >-
+    $testConfig = @'
+    <?xml version="1.0" encoding="utf-8" ?>
+    <configuration>
+      <appSettings>
+        <add key="UATestEndpoint" value="opc.tcp://localhost:61210/UA/SampleServer"/>
+      </appSettings>
+    </configuration>
+    '@
+
+    $testConfig | Out-File "tests/App.config"
+
     choco install opc-components -version 106.0.201.2
 
     choco install grayboxsimulator -version 1.8.0.2
