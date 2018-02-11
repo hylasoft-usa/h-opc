@@ -30,6 +30,7 @@ build_script:
           <add key="UATestEndpoint" value="opc.tcp://localhost:61210/UA/SampleServer"/>
         </appSettings>
       </configuration>
+
       '@
 
       $testConfig | Out-File "tests\App.config" -Encoding ascii
