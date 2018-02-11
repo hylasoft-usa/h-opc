@@ -42,7 +42,7 @@ test_script:
     </configuration>
     '@
 
-    $testConfig | Out-File "tests/App.config"
+    $testConfig | Out-File "tests/App.config" -Encoding ascii
 
     choco install opc-components -version 106.0.201.2
 

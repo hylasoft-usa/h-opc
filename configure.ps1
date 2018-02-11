@@ -19,6 +19,6 @@ if ([string]::IsNullOrEmpty($uaAddress))
 
 $baseConfig = $baseConfig.Replace('${uaEndpoint}', $uaAddress)
 
-$baseConfig | Out-File 'tests\App.config'
+$baseConfig | Out-File 'tests\App.config' -Encoding ascii
 
 Write-Host 'Configured project successfully'
