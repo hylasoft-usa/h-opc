@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Hylasoft.Behavior;
-using Hylasoft.Behavior.Extensions;
 using Hylasoft.Opc.Common;
 using Hylasoft.Opc.Da;
 using NUnit.Framework;
@@ -12,7 +10,7 @@ using System.Threading.Tasks;
 namespace Hylasoft.Opc.Tests
 {
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Test Class"), TestFixture]
-  public class DaTest : Spec
+  public class DaTest
   {
     private DaClient _client;
     private const string TestRegister = "storage.numeric.reg06";
@@ -34,29 +32,29 @@ namespace Hylasoft.Opc.Tests
     [Test]
     public void StatusTest()
     {
-      Expect(_client.Status).ToBe(OpcStatus.Connected);
+      Assert.AreEqual(OpcStatus.Connected, _client.Status);
     }
     [Test]
     public void FindNodeTest()
     {
       var node = _client.FindNode(TestRegister);
-      Expect(node).ToNotBeNull();
+      Assert.NotNull(node);
     }
     [Test]
     public void DaReadDouble()
     {
       var val = _client.Read<double>(TestRegister);
-      Expect(val.Value).ToBe(4);
+      Assert.AreEqual(4, val.Value);
     }
     [Test]
     public void DaReadAsyncDouble()
     {
       var task = _client.ReadAsync<double>(TestRegister);
       task.Wait();
-      Expect(task.Result.Value).ToBe(4);
+      Assert.AreEqual(4, task.Result.Value);
       task = _client.ReadAsync<double>(TestRegister);
       // didn't wait
-      Expect(task.IsCompleted).ToBe(false);
+      Assert.False(task.IsCompleted);
     }
     [Test]
     public void DaReadWrongType()
@@ -104,7 +102,7 @@ namespace Hylasoft.Opc.Tests
       Thread.Sleep(interval);
       _client.Write(tag, 13);
       Thread.Sleep(interval);
-      Expect(executed).ToBe(3);
+      Assert.AreEqual(3, executed);
     }
     [Test]
     public void DaExploreFolder()

@@ -21,7 +21,21 @@ install:
 build_script:
   - node --version
   - npm --version
+  - ps: >-
+      $testConfig = @'
+
+      <?xml version="1.0" encoding="utf-8" ?>
+      <configuration>
+        <appSettings>
+          <add key="UATestEndpoint" value="opc.tcp://opcua.demo-this.com:51210/UA/SampleServer"/>
+        </appSettings>
+      </configuration>
+
+      '@
+
+      $testConfig | Out-File "tests\App.config" -Encoding ascii
   - grunt build --no-color
+
 
 test: off # tests are done in the build script
 

@@ -151,6 +151,7 @@ and [Graybox Simulator](http://gray-box.net/download_graysim.php?lang=en)
     + `choco install grayboxsimulator`
   + OPC Foundation's Sample Server requires you register with the website before you can download.
 + The tests use [NUnit](https://github.com/nunit/nunit). To run them in Visual Studio, install the [NUnit 3 Test Adapter](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnit3TestAdapter)
++ To configure the test project, run the `configure.ps1` script in the root h-opc directory
 
 #### UA
 + Open OPC Foundation's Sample Client (under Start -> OPC Foundation -> UA x.xx -> Sample Applications -> Opc.Ua.SampleClient.exe)
