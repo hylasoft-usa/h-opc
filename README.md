@@ -48,7 +48,7 @@ or with options...
 var options = new UaClientOptions {
   UserIdentity = new Opc.Ua.UserIdentity("<your-username>", "<your-password>")
 };
-using (var client = new UaClient(new Uri("opc.tcp://host-url")), options)
+using (var client = new UaClient(new Uri("opc.tcp://host-url"), options))
 {
   client.Connect();
   // Use `client` here
