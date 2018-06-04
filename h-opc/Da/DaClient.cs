@@ -299,6 +299,21 @@ namespace Hylasoft.Opc.Da
       if (result.ResultID.ToString() != "S_OK")
         throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0}, Opc Tag: {1})", result.ResultID, tag));
     }
+     /// <summary>
+     /// Connect using username and password credentials
+     /// </summary>
+     /// <param name="userName">the username to use with NetworkCredentials</param>
+     /// <param name="password">the password to use with NetworkCredentials</param>
+     public void Connect(string userName, string password)
+     {
+       if (Status == OpcStatus.Connected)
+         return;
+       _server = new OpcDa.Server(new Factory(), _url);
+       _server.Connect(new ConnectData(new System.Net.NetworkCredential(userName, password)));
+       var root = new DaNode(string.Empty, string.Empty);
+       RootNode = root;
+       AddNodeToCache(root);
+     }
   }
 }
 
