@@ -293,10 +293,7 @@ namespace Hylasoft.Opc.Da
       if (result.ResultID.ToString() != "S_OK")
         throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0}, Opc Tag: {1})", result.ResultID, tag));
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 9ba41acc1e687196efa8c6e819dafd2aec32abfd
      /// <summary>
      /// Connect using username and password credentials
      /// </summary>
