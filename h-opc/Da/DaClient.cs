@@ -88,13 +88,7 @@ namespace Hylasoft.Opc.Da
     /// </summary>
     public void Connect()
     {
-      if (Status == OpcStatus.Connected)
-        return;
-      _server = new OpcDa.Server(new Factory(), _url);
-      _server.Connect();
-      var root = new DaNode(string.Empty, string.Empty);
-      RootNode = root;
-      AddNodeToCache(root);
+      Connect(() => _server.Connect());
     }
 
     /// <summary>
@@ -299,6 +293,31 @@ namespace Hylasoft.Opc.Da
       if (result.ResultID.ToString() != "S_OK")
         throw new OpcException(string.Format("Invalid response from the server. (Response Status: {0}, Opc Tag: {1})", result.ResultID, tag));
     }
+
+     /// <summary>
+     /// Connect using username and password credentials
+     /// </summary>
+     /// <param name="userName">the username to use with NetworkCredentials</param>
+     /// <param name="password">the password to use with NetworkCredentials</param>
+     public void Connect(string userName, string password)
+     {
+       Connect(() => _server.Connect(new ConnectData(new System.Net.NetworkCredential(userName, password))));
+     }
+
+     /// <summary>
+     /// Main connection method, used to keep the connection logic in one place
+     /// </summary>
+     /// <param name="connect">the action which calls the correct overload of OpcDa.Server.Connect()</param>
+     private void Connect(Action connect)
+     {
+       if (Status == OpcStatus.Connected)
+         return;
+       _server = new OpcDa.Server(new Factory(), _url);
+       connect.Invoke();
+       var root = new DaNode(string.Empty, string.Empty);
+       RootNode = root;
+       AddNodeToCache(root);
+     }
   }
 }
 
